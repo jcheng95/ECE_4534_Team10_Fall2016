@@ -19,6 +19,26 @@
 extern "C" {
 #endif
     
+    // Task constants
+    #define TASK_ENTER ((unsigned char)'0')
+    #define INF_WHILE ((unsigned char)'1')
+    #define TASK_BEFORE_Q_TX ((unsigned char)'2')
+    #define TASK_BEFORE_Q_RX ((unsigned char)'3')
+    #define TASK_AFTER_Q_TX ((unsigned char)'4')
+    #define TASK_AFTER_Q_RX ((unsigned char)'5')
+    
+    //ISR constants
+    #define ENTER_ISR ((unsigned char)'6')
+    #define EXIT_ISR ((unsigned char)'7')
+    #define ISR_BEFORE_Q_TX ((unsigned char)'8')
+    #define ISR_BEFORE_Q_RX ((unsigned char)'9')
+    #define ISR_AFTER_Q_TX ((unsigned char)'a')
+    #define ISR_AFTER_Q_RX ((unsigned char)'b')
+
+    // Error code
+    #define ERROR_CODE ((unsigned int)0xFFFFFFFF)
+    #define ERROR_STATE ((unsigned char) 'Q')
+    
     ////////////////////////////////////////////////////////////////////////
     //
     //  Function Name: dbgOutputVal(unsigned char outVal)
@@ -35,8 +55,9 @@ extern "C" {
     void dbgOutputVal(unsigned char outVal);
     
     ////////////////////////////////////////////////////////////////////////
-    // This will output debug values to pins 54-61
-    // The pin order here is in reverse going from B0 - B7
+    // This will output debug values to pins 83, 13, 82, 12, 81, 11, 80, 10
+    // The pin order here is:
+    // RG12, RA3, RG14, RA2, RA7, RC4, RA6, RD4
     //
     //  Function Name: dbgOutputVal(unsigned char outVal)
     //
@@ -48,26 +69,27 @@ extern "C" {
     //                  by byte to the GPIO pins 54 - 61. These GPIO pins
     //                  represent the pin order B0 - B7, respectively.
     //
+    //  NOTE:           It is strongly recommended to not use this outside of
+    //                  milestone 1. The pins used here will be in the way of
+    //                  other pins because they are not directly (logically)
+    //                  related.
+    //
     ////////////////////////////////////////////////////////////////////////
     void dbgOutputLoc(unsigned char outVal);
-    //task consts
     
-    #define TASK_ENTER ((unsigned char)'0')
-    #define INF_WHILE ((unsigned char)'1')
-    #define TASK_BEFORE_Q_TX ((unsigned char)'2')
-    #define TASK_BEFORE_Q_RX ((unsigned char)'3')
-    #define TASK_AFTER_Q_TX ((unsigned char)'4')
-    #define TASK_AFTER_Q_RX ((unsigned char)'5')
-    
-    //ISR consts
-    
-    #define ENTER_ISR ((unsigned char)'6')
-    #define EXIT_ISR ((unsigned char)'7')
-    #define ISR_BEFORE_Q_TX ((unsigned char)'8')
-    #define ISR_BEFORE_Q_RX ((unsigned char)'9')
-    #define ISR_AFTER_Q_TX ((unsigned char)'a')
-    #define ISR_AFTER_Q_RX ((unsigned char)'b')
-    
+    ////////////////////////////////////////////////////////////////////////
+    //
+    //  Function Name: stopProcess(unsigned int outVal)
+    //
+    //  Returns:        void
+    //
+    //  Parameters:     unsigned int outVal
+    //
+    //  Description:    This function stops the process if a value put
+    //                  in the parameter is incorrect.
+    //
+    ////////////////////////////////////////////////////////////////////////
+    void stopProcess(unsigned int outVal);
     
     /* Provide C++ Compatibility */
 #ifdef __cplusplus

@@ -60,6 +60,8 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "system_definitions.h"
 
 #include <queue.h>
+#include "system_config/default/framework/driver/tmr/drv_tmr_static.h"
+#include "debug.h"
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus  // Provide C++ Compatibility
@@ -75,14 +77,14 @@ extern "C" {
 // *****************************************************************************
 // *****************************************************************************
 
+    // State machine enumerated type
     typedef enum {
         stateT = 0,
         stateE = 1,
         stateA = 2,
         stateM = 3,
-        stateSpace = 4,
-        state1 = 5,
-        state0 = 6
+        state1 = 4,
+        state0 = 5
     } SYSTEM_STATES;
     
 // *****************************************************************************
@@ -105,16 +107,33 @@ typedef struct
     
     // State machine
     SYSTEM_STATES states;
+    
+    // Counter used for a failure state
+    int counter;
 } MAINAPP_DATA;
 
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: Application Callback Routines
+// Section: Application Local Routines
 // *****************************************************************************
 // *****************************************************************************
-/* These routines are called by drivers when certain events occur.
-*/
+////////////////////////////////////////////////////////////////////////
+//
+//  Function Name: checkCounter(void)
+//
+//  Returns:        unsigned int
+//
+//  Parameters:     void
+//
+//  Description:    This function checks if the counter has reached a
+//                  certain value that will eventually stop sending
+//                  "TEAM10" to the debug I/O lines.
+//
+//  Current Value:  35
+//
+////////////////////////////////////////////////////////////////////////
+unsigned int checkCounter(void);
 	
 // *****************************************************************************
 // *****************************************************************************

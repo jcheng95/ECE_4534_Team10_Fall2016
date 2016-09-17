@@ -229,7 +229,7 @@
       <Template>
         <Name>sys_ports_static.c</Name>
         <Path>Source Files/app/system_config/default/framework/system/ports/src</Path>
-        <Checksum>95DFDD1603FE4DED042B76A806DFF3A5</Checksum>
+        <Checksum>759B3920B8F625675D855AA9771FCCEC</Checksum>
       </Template>
       <Template>
         <Name>system_init.c</Name>
@@ -282,7 +282,7 @@
       <Template>
         <Name>system_config.h</Name>
         <Path>Header Files/app/system_config/default</Path>
-        <Checksum>DB728B92773DBF5DEB568616DB657AAE</Checksum>
+        <Checksum>42F669A88BDF70F5EA6010A4BCED25BA</Checksum>
       </Template>
       <Template>
         <Name>drv_tmr_static.c</Name>
@@ -298,7 +298,7 @@
         <Name>system_interrupt.c</Name>
         <Path>Source Files/app/system_config/default</Path>
         <Checksum>FC39A96F7DA885525F65DD967F733A0F</Checksum>
-        <ProjectFileChecksum>24256F9EFF12BD855E913C9CC48158EC</ProjectFileChecksum>
+        <ProjectFileChecksum>89DACECC8F5FE81FEF2B47113F3FE1A6</ProjectFileChecksum>
       </Template>
       <Template>
         <Name>rtos_hooks.c</Name>
@@ -317,25 +317,25 @@
     </Templates>
     <CompilerItems>
       <C32-AS>
-        <Include value="../../../../../../../microchip/harmony/v1_08_01/third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MX"/>
-        <Include value="../../../../../../../microchip/harmony/v1_08_01/third_party/rtos/FreeRTOS/Source/include"/>
+        <Include value="../../../../../microchip/harmony/v1_08_01/third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MX"/>
+        <Include value="../../../../../microchip/harmony/v1_08_01/third_party/rtos/FreeRTOS/Source/include"/>
         <Include value="../src/system_config/default"/>
       </C32-AS>
       <C32>
-        <Include value="C:\Users\Kyle VT\MPLABXProjects\milestone1\Milestone1_v2\firmware\src"/>
-        <Include value="C:\Users\Kyle VT\MPLABXProjects\milestone1\Milestone1_v2\firmware\src\system_config\default"/>
-        <Include value="C:\Users\Kyle VT\MPLABXProjects\milestone1\Milestone1_v2\firmware\src\default"/>
+        <Include value="C:\ECE_4534\Fall_2016\Milestone1_v2\firmware\src"/>
+        <Include value="C:\ECE_4534\Fall_2016\Milestone1_v2\firmware\src\system_config\default"/>
+        <Include value="C:\ECE_4534\Fall_2016\Milestone1_v2\firmware\src\default"/>
         <Include value="C:\microchip\harmony\v1_08_01\framework"/>
-        <Include value="C:\Users\Kyle VT\MPLABXProjects\milestone1\Milestone1_v2\firmware\src\system_config\default\framework"/>
-        <Include value="../../../../../../../microchip/harmony/v1_08_01/third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MX"/>
-        <Include value="../../../../../../../microchip/harmony/v1_08_01/third_party/rtos/FreeRTOS/Source/include"/>
+        <Include value="C:\ECE_4534\Fall_2016\Milestone1_v2\firmware\src\system_config\default\framework"/>
+        <Include value="../../../../../microchip/harmony/v1_08_01/third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MX"/>
+        <Include value="../../../../../microchip/harmony/v1_08_01/third_party/rtos/FreeRTOS/Source/include"/>
         <Include value="../src/system_config/default"/>
         <Define value="__XC"/>
       </C32>
     </CompilerItems>
     <Libraries>
-      <Library value="../../../../../../../microchip/harmony/v1_08_01/bin/framework/peripheral/PIC32MX795F512L_peripherals.a"/>
-      <Library value="../../../../../../../microchip/harmony/v1_08_01/framework/tcpip/src/crypto/aes_pic32mx.a"/>
+      <Library value="../../../../../microchip/harmony/v1_08_01/bin/framework/peripheral/PIC32MX795F512L_peripherals.a"/>
+      <Library value="../../../../../microchip/harmony/v1_08_01/framework/tcpip/src/crypto/aes_pic32mx.a"/>
     </Libraries>
   </Manifest>
 </configuration>

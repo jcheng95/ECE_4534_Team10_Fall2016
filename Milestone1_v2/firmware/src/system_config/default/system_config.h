@@ -94,6 +94,30 @@ extern "C" {
 #define SYS_PORT_CNPUE          0x0
 #define SYS_PORT_CNEN           0x0
 
+#define SYS_PORT_A_TRIS         0xc2ff
+#define SYS_PORT_A_LAT          0x0
+#define SYS_PORT_A_ODC          0x0
+
+#define SYS_PORT_B_TRIS         0xc7ff
+#define SYS_PORT_B_LAT          0x0
+#define SYS_PORT_B_ODC          0x0
+
+#define SYS_PORT_D_TRIS         0xffbf
+#define SYS_PORT_D_LAT          0x0
+#define SYS_PORT_D_ODC          0x0
+
+#define SYS_PORT_E_TRIS         0x300
+#define SYS_PORT_E_LAT          0x0
+#define SYS_PORT_E_ODC          0x0
+
+#define SYS_PORT_F_TRIS         0x313c
+#define SYS_PORT_F_LAT          0x0
+#define SYS_PORT_F_ODC          0x0
+
+#define SYS_PORT_G_TRIS         0xf2cf
+#define SYS_PORT_G_LAT          0x0
+#define SYS_PORT_G_ODC          0x0
+
 
 // *****************************************************************************
 // *****************************************************************************

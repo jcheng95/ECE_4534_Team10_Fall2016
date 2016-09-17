@@ -65,6 +65,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "system_definitions.h"
 
 #include "debug.h"
+#include "mainapp_public.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -72,18 +73,46 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 // *****************************************************************************
 
-    
+/*
+ //////////////////////////////////////////
+ Name                       ASCII Value
+ ________________________________________
+TASK_ENTER              0
+INF_WHILE               1
+TASK_BEFORE_Q_TX        2
+TASK_BEFORE_Q_RX        3
+TASK_AFTER_Q_TX         4
+TASK_AFTER_Q_RX         5
+ENTER_ISR               6
+EXIT_ISR                7
+ISR_BEFORE_Q_TX         8
+ISR_BEFORE_Q_RX         9
+ISR_AFTER_Q_TX          a
+ISR_AFTER_Q_RX          b
+-----------------------------------------
+ERROR_CODE          0xFFFFFFFF
+ 
+//////////////////////////////////////////
+ */    
+
 void IntHandlerDrvTmrInstance0(void)
 {
+    // Immediately upon entering an ISR
     dbgOutputLoc(ENTER_ISR);
+    
+    // Clear the interrupt flag
     PLIB_INT_SourceFlagClear(INT_ID_0,INT_SOURCE_TIMER_2);
-    //send value to msgQueue
+    
+    // Immediately before sending to a queue or receiving from a queue
     dbgOutputLoc(ISR_BEFORE_Q_TX);
     
-    //send something to queue here to trigger change in state machine
+    //Send to the message queue belonging to mainapp from the ISR
+    mainAppSendTimerValToMsgQFromISR(50);
     
-    dbgOutputLoc(ISR_BEFORE_Q_TX);
-    //exit ISR
+    // Immediately after sending to a queue or receiving from a queue
+    dbgOutputLoc(ISR_AFTER_Q_TX);
+    
+    // Immediately before leaving an ISR
     dbgOutputLoc(EXIT_ISR);
 }
   

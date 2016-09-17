@@ -17,7 +17,7 @@ extern "C" {
     //
     //  Function Name:  mainAppSendTimerValToMsgQ(unsigned int millisecondsElapsed)
     //
-    //  Returns:        int
+    //  Returns:        BaseType_t
     //
     //  Parameters:     unsigned int millisecondsElapsed
     //
@@ -25,13 +25,13 @@ extern "C" {
     //                  portMAX_DELAY.
     //
     ///////////////////////////////////////////////////////////////////////////////////
-    int mainAppSendTimerValToMsgQ(unsigned int millisecondsElapsed);
+    BaseType_t mainAppSendTimerValToMsgQ(unsigned int millisecondsElapsed);
     
     //////////////////////////////////////////////////////////////////////////////////////////
     //
     //  Function Name:  mainAppSendTimerValToMsgQFromISR(unsigned int millisecondsElapsed)
     //
-    //  Returns:        int
+    //  Returns:        BaseType_t
     //
     //  Parameters:     unsigned int millisecondsElapsed
     //
@@ -40,7 +40,7 @@ extern "C" {
     //                  to as quickly as possible.
     //
     //////////////////////////////////////////////////////////////////////////////////////////
-    int mainAppSendTimerValToMsgQFromISR(unsigned int millisecondsElapsed);
+    BaseType_t mainAppSendTimerValToMsgQFromISR(unsigned int millisecondsElapsed);
     
     /* Provide C++ Compatibility */
 #ifdef __cplusplus

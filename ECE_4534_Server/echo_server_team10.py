@@ -112,13 +112,13 @@ def listening():
                     # Sensor data from PIC
                     elif inMessage.messageType == SENSOR:
                         # parse something here for display
-                        print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
+                        print('Receive: {} - {} : {} cm'.format(CHAR_TO_SENDER[inMessage.sender],
                                                              CHAR_TO_MESSAGE[inMessage.messageType],
                                                              sensorData))
                     # Sensor data acknowledge from a computer
                     elif inMessage.messageType == ACKNOWLEDGE:
                         # parse something here for display
-                        print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
+                        print('Receive: {} - {} : {} cm'.format(CHAR_TO_SENDER[inMessage.sender],
                                                              CHAR_TO_MESSAGE[inMessage.messageType],
                                                              sensorData))
 

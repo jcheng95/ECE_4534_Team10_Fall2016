@@ -57,6 +57,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "mainapp.h"
 #include "uart_tx.h"
 #include "uart_rx.h"
+#include "adc_app.h"
 
 
 // *****************************************************************************
@@ -71,6 +72,7 @@ static void _SYS_Tasks ( void );
 static void _MAINAPP_Tasks(void);
 static void _UART_TX_Tasks(void);
 static void _UART_RX_Tasks(void);
+static void _ADC_APP_Tasks(void);
 
 
 // *****************************************************************************
@@ -108,6 +110,11 @@ void SYS_Tasks ( void )
     xTaskCreate((TaskFunction_t) _UART_RX_Tasks,
                 "UART_RX Tasks",
                 4096, NULL, 1, NULL);
+
+    /* Create OS Thread for ADC_APP Tasks. */
+    xTaskCreate((TaskFunction_t) _ADC_APP_Tasks,
+                "ADC_APP Tasks",
+                1024, NULL, 1, NULL);
 
     /**************
      * Start RTOS * 
@@ -186,6 +193,23 @@ static void _UART_RX_Tasks(void)
     while(1)
     {
         UART_RX_Tasks();
+    }
+}
+
+
+/*******************************************************************************
+  Function:
+    void _ADC_APP_Tasks ( void )
+
+  Summary:
+    Maintains state machine of ADC_APP.
+*/
+
+static void _ADC_APP_Tasks(void)
+{
+    while(1)
+    {
+        ADC_APP_Tasks();
     }
 }
 

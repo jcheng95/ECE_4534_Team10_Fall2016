@@ -1,29 +1,29 @@
 /*******************************************************************************
-  MPLAB Harmony System Configuration Header
-
+  MPLAB Harmony Application Source File
+  
+  Company:
+    Microchip Technology Inc.
+  
   File Name:
-    system_config.h
+    adc_app.c
 
   Summary:
-    Build-time configuration header for the system defined by this MPLAB Harmony
-    project.
+    This file contains the source code for the MPLAB Harmony application.
 
   Description:
-    An MPLAB Project may have multiple configurations.  This file defines the
-    build-time options for a single configuration.
-
-  Remarks:
-    This configuration header must not define any prototypes or data
-    definitions (or include any files that do).  It only provides macro
-    definitions for build-time configuration options that are not instantiated
-    until used by another MPLAB Harmony module or application.
-
-    Created with MPLAB Harmony Version 1.08.01
-*******************************************************************************/
+    This file contains the source code for the MPLAB Harmony application.  It 
+    implements the logic of the application's state machine and it may call 
+    API routines of other MPLAB Harmony modules in the system, such as drivers,
+    system services, and middleware.  However, it does not call any of the
+    system interfaces (such as the "Initialize" and "Tasks" functions) of any of
+    the modules in the system or make any assumptions about when those functions
+    are called.  That is the responsibility of the configuration-specific system
+    files.
+ *******************************************************************************/
 
 // DOM-IGNORE-BEGIN
 /*******************************************************************************
-Copyright (c) 2013-2015 released Microchip Technology Inc.  All rights reserved.
+Copyright (c) 2013-2014 released Microchip Technology Inc.  All rights reserved.
 
 Microchip licenses to you the right to use, modify, copy and distribute
 Software only when embedded on a Microchip microcontroller or digital signal
@@ -33,7 +33,7 @@ controller that is integrated into your product or third party product
 You should refer to the license agreement accompanying this Software for
 additional information regarding your rights and obligations.
 
-SOFTWARE AND DOCUMENTATION ARE PROVIDED AS IS WITHOUT WARRANTY OF ANY KIND,
+SOFTWARE AND DOCUMENTATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
 EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF
 MERCHANTABILITY, TITLE, NON-INFRINGEMENT AND FITNESS FOR A PARTICULAR PURPOSE.
 IN NO EVENT SHALL MICROCHIP OR ITS LICENSORS BE LIABLE OR OBLIGATED UNDER
@@ -43,108 +43,135 @@ INCLUDING BUT NOT LIMITED TO ANY INCIDENTAL, SPECIAL, INDIRECT, PUNITIVE OR
 CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, COST OF PROCUREMENT OF
 SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 (INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF), OR OTHER SIMILAR COSTS.
-*******************************************************************************/
+ *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _SYSTEM_CONFIG_H
-#define _SYSTEM_CONFIG_H
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: Included Files
+// Section: Included Files 
 // *****************************************************************************
 // *****************************************************************************
-/*  This section Includes other configuration headers necessary to completely
-    define this configuration.
+
+#include "adc_app.h"
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: Global Data Definitions
+// *****************************************************************************
+// *****************************************************************************
+
+// *****************************************************************************
+/* Application Data
+
+  Summary:
+    Holds application data
+
+  Description:
+    This structure holds the application's data.
+
+  Remarks:
+    This structure should be initialized by the APP_Initialize function.
+    
+    Application strings and buffers are be defined outside this structure.
 */
 
-// DOM-IGNORE-BEGIN
-#ifdef __cplusplus  // Provide C++ Compatibility
-
-extern "C" {
-
-#endif
-// DOM-IGNORE-END
+ADC_APP_DATA adc_appData;
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: System Service Configuration
+// Section: Application Callback Functions
 // *****************************************************************************
 // *****************************************************************************
-// *****************************************************************************
-/* Common System Service Configuration Options
+
+/* TODO:  Add any necessary callback functions.
 */
-#define SYS_VERSION_STR           "1.08.01"
-#define SYS_VERSION               10801
 
 // *****************************************************************************
-/* Clock System Service Configuration Options
+// *****************************************************************************
+// Section: Application Local Functions
+// *****************************************************************************
+// *****************************************************************************
+
+
+/* TODO:  Add any necessary local functions.
 */
-#define SYS_CLK_FREQ                        80000000ul
-#define SYS_CLK_BUS_PERIPHERAL_1            80000000ul
-#define SYS_CLK_UPLL_BEFORE_DIV2_FREQ       48000000ul
-#define SYS_CLK_CONFIG_PRIMARY_XTAL         8000000ul
-#define SYS_CLK_CONFIG_SECONDARY_XTAL       0ul
-   
-/*** Interrupt System Service Configuration ***/
-#define SYS_INT                     true
-
-/*** Ports System Service Configuration ***/
-#define SYS_PORT_AD1PCFG        ~0xffff
-#define SYS_PORT_CNPUE          0x0
-#define SYS_PORT_CNEN           0x0
 
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: Driver Configuration
-// *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
-/* USART Driver Configuration Options
-*/
-#define DRV_USART_INSTANCES_NUMBER                  1
-#define DRV_USART_CLIENTS_NUMBER                    1
-#define DRV_USART_INTERRUPT_MODE                    true
-#define DRV_USART_BYTE_MODEL_SUPPORT                true
-#define DRV_USART_READ_WRITE_MODEL_SUPPORT          false
-#define DRV_USART_BUFFER_QUEUE_SUPPORT              false
-#define DRV_USART_SUPPORT_TRANSMIT_DMA              false
-#define DRV_USART_SUPPORT_RECEIVE_DMA               false
-
-// *****************************************************************************
-// *****************************************************************************
-// Section: Middleware & Other Library Configuration
-// *****************************************************************************
-// *****************************************************************************
-/*** OSAL Configuration ***/
-#define OSAL_USE_RTOS          1
-
-
-
-// *****************************************************************************
-// *****************************************************************************
-// Section: Application Configuration
+// Section: Application Initialization and State Machine Functions
 // *****************************************************************************
 // *****************************************************************************
 
-/*** Application Instance 0 Configuration ***/
+/*******************************************************************************
+  Function:
+    void ADC_APP_Initialize ( void )
 
-/*** Application Instance 1 Configuration ***/
+  Remarks:
+    See prototype in adc_app.h.
+ */
 
-/*** Application Instance 2 Configuration ***/
+void ADC_APP_Initialize ( void )
+{
+    /* Place the App state machine in its initial state. */
+    adc_appData.state = ADC_APP_STATE_INIT;
 
-/*** Application Instance 3 Configuration ***/
-
-//DOM-IGNORE-BEGIN
-#ifdef __cplusplus
+    
+    /* TODO: Initialize your application's state machine and other
+     * parameters.
+     */
 }
-#endif
-//DOM-IGNORE-END
 
 
-#endif // _SYSTEM_CONFIG_H
+/******************************************************************************
+  Function:
+    void ADC_APP_Tasks ( void )
+
+  Remarks:
+    See prototype in adc_app.h.
+ */
+
+void ADC_APP_Tasks ( void )
+{
+
+    /* Check the application's current state. */
+    switch ( adc_appData.state )
+    {
+        /* Application's initial state. */
+        case ADC_APP_STATE_INIT:
+        {
+            bool appInitialized = true;
+       
+        
+            if (appInitialized)
+            {
+            
+                adc_appData.state = ADC_APP_STATE_SERVICE_TASKS;
+            }
+            break;
+        }
+
+        case ADC_APP_STATE_SERVICE_TASKS:
+        {
+        
+            break;
+        }
+
+        /* TODO: implement your application state machine.*/
+        
+
+        /* The default state should never be executed. */
+        default:
+        {
+            /* TODO: Handle error in application's state machine. */
+            break;
+        }
+    }
+}
+
+ 
+
 /*******************************************************************************
  End of File
-*/
-
+ */

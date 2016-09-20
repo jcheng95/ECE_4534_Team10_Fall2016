@@ -68,6 +68,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "mainapp.h"
 #include "uart_tx.h"
 #include "uart_rx.h"
+#include "adc_app.h"
 
 
 // DOM-IGNORE-BEGIN

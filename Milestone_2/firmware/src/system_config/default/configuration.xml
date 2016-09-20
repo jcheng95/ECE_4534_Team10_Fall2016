@@ -237,6 +237,14 @@
         <Path>Source Files/app</Path>
       </Template>
       <Template>
+        <Name>adc_app.h</Name>
+        <Path>Header Files/app</Path>
+      </Template>
+      <Template>
+        <Name>adc_app.c</Name>
+        <Path>Source Files/app</Path>
+      </Template>
+      <Template>
         <Name>drv_adc_static.h</Name>
         <Path>Header Files/app/system_config/default/framework/driver/adc</Path>
         <Checksum>EB83B77B6F50631DF29C48BC407262EE</Checksum>
@@ -273,7 +281,7 @@
       <Template>
         <Name>system_interrupt.c</Name>
         <Path>Source Files/app/system_config/default</Path>
-        <Checksum>D4D212AA1AAF5617CAA9CB20C5E259ED</Checksum>
+        <Checksum>E6CDD330F595F64BB066E495F5E8498A</Checksum>
         <ProjectFileChecksum>0274E2B5D2A440EF62C31F05AB4B55E0</ProjectFileChecksum>
       </Template>
       <Template>
@@ -293,7 +301,7 @@
       <Template>
         <Name>system_init.c</Name>
         <Path>Source Files/app/system_config/default</Path>
-        <Checksum>86B03EA80795240B624749B5BE496E96</Checksum>
+        <Checksum>ABB8DA6641099BA318748E52BF1EB7AB</Checksum>
         <ProjectFileChecksum>4ABA22A792107D223F03DEE4EBFAF380</ProjectFileChecksum>
       </Template>
       <Template>
@@ -307,7 +315,7 @@
       <Template>
         <Name>system_definitions.h</Name>
         <Path>Header Files/app/system_config/default</Path>
-        <Checksum>9342F7F7EF488B4AB2B94ACC55D4B22E</Checksum>
+        <Checksum>485C1AA4C0528C1F9B78290B3D7FDA2A</Checksum>
       </Template>
       <Template>
         <Name>system_exceptions.c</Name>
@@ -330,12 +338,12 @@
       <Template>
         <Name>system_tasks.c</Name>
         <Path>Source Files/app/system_config/default</Path>
-        <Checksum>B7FA099384D2F8311EE433CB9DA93CB6</Checksum>
+        <Checksum>5857679B3B94BEB9FBA016A7B46FB584</Checksum>
       </Template>
       <Template>
         <Name>system_config.h</Name>
         <Path>Header Files/app/system_config/default</Path>
-        <Checksum>9294864936AA4A41A73303F38EB29D82</Checksum>
+        <Checksum>AF7F40245B9089F3F9F175C41356B676</Checksum>
       </Template>
       <Template>
         <Name>rtos_hooks.c</Name>

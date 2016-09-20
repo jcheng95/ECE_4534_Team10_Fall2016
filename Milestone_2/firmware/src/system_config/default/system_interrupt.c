@@ -64,6 +64,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "mainapp.h"
 #include "uart_tx.h"
 #include "uart_rx.h"
+#include "adc_app.h"
 #include "system_definitions.h"
 
 #include <queue.h>
@@ -92,6 +93,12 @@ BaseType_t sendToTXBufferQueueFromISR(char msg)
 {
     PLIB_INT_SourceEnable(USART_ID_1, INT_SOURCE_USART_1_TRANSMIT);
     return xQueueSendFromISR(bufferQueue, &msg, 0);
+}
+
+void IntHandlerDrvAdc(void)
+{
+    /* Clear ADC Interrupt Flag */
+    PLIB_INT_SourceFlagClear(INT_ID_0, INT_SOURCE_ADC_1);
 }
 
 void IntHandlerDrvUsartInstance0(void)

@@ -101,36 +101,39 @@ def listening():
 
                 # Message exists
                 if data:
-                    inMessage = convertFromMessage(data)
+                    if data == b'*HELLO*':
+                        pass
+                    else:
+                        inMessage = convertFromMessage(data)
 
-                    # Debug message
-                    if inMessage.messageType == DEBUG:
-                        # parse something here for display
-                        print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
-                                                             CHAR_TO_MESSAGE[inMessage.messageType],
-                                                             sensorData))
-                    # Sensor data from PIC
-                    elif inMessage.messageType == SENSOR:
-                        # parse something here for display
-                        print('Receive: {} - {} : {} cm'.format(CHAR_TO_SENDER[inMessage.sender],
-                                                             CHAR_TO_MESSAGE[inMessage.messageType],
-                                                             sensorData))
-                    # Sensor data acknowledge from a computer
-                    elif inMessage.messageType == ACKNOWLEDGE:
-                        # parse something here for display
-                        print('Receive: {} - {} : {} cm'.format(CHAR_TO_SENDER[inMessage.sender],
-                                                             CHAR_TO_MESSAGE[inMessage.messageType],
-                                                             sensorData))
+                        # Debug message
+                        if inMessage.messageType == DEBUG:
+                            # parse something here for display
+                            print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
+                                                                 CHAR_TO_MESSAGE[inMessage.messageType],
+                                                                 sensorData))
+                        # Sensor data from PIC
+                        elif inMessage.messageType == SENSOR:
+                            # parse something here for display
+                            print('Receive: {} - {} : {} cm'.format(CHAR_TO_SENDER[inMessage.sender],
+                                                                 CHAR_TO_MESSAGE[inMessage.messageType],
+                                                                 sensorData))
+                        # Sensor data acknowledge from a computer
+                        elif inMessage.messageType == ACKNOWLEDGE:
+                            # parse something here for display
+                            print('Receive: {} - {} : {} cm'.format(CHAR_TO_SENDER[inMessage.sender],
+                                                                 CHAR_TO_MESSAGE[inMessage.messageType],
+                                                                 sensorData))
 
-                    #Do not send the message to master socket and the client who has sent us the message
-                    for sockets in clientList:
-                        if sockets != s and sockets != sock :
-                            try :
-                                sockets.send(data)
-                            except :
-                                # broken socket connection may be, chat client pressed ctrl+c for example
-                                sockets.close()
-                                clientList.remove(sockets)
+                        #Do not send the message to master socket and the client who has sent us the message
+                        for sockets in clientList:
+                            if sockets != s and sockets != sock :
+                                try :
+                                    sockets.send(data)
+                                except :
+                                    # broken socket connection may be, chat client pressed ctrl+c for example
+                                    sockets.close()
+                                    clientList.remove(sockets)
 
 def main():
     global data

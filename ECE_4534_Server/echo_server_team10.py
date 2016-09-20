@@ -17,7 +17,7 @@ data = b''
 
 # Counters for the number of messages sent and received
 SEND_COUNT = 0
-RECEIVED_COUNT = 0
+RECEIVE_COUNT = 0
 
 # Converts an array of bytes to a messageStructure object that can be used to send out a message
 # Really this is just a fancy way of extracting data I want to keep a hold of in a class
@@ -75,7 +75,7 @@ def listening():
 
     # Socket parameters
     host = ''
-    port = 59784
+    port = 2000
     backlog = 10
     size = 1024
 
@@ -131,14 +131,13 @@ def listening():
                                 # broken socket connection may be, chat client pressed ctrl+c for example
                                 sockets.close()
                                 clientList.remove(sockets)
-"""
+
 def main():
     global data
     global clientList
 
     while 1:
-        # Do Nothing
-"""
+        """ Do Nothing """
 
 if __name__ == '__main__':
     # Starting the listening thread
@@ -146,4 +145,4 @@ if __name__ == '__main__':
     listeningThread.start()
 
     # Starting the main function
-    #main()
+    main()

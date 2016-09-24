@@ -54,6 +54,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 
 #include "adc_app.h"
+#include "adc_app_public.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -84,8 +85,30 @@ ADC_APP_DATA adc_appData;
 // *****************************************************************************
 // *****************************************************************************
 
-/* TODO:  Add any necessary callback functions.
-*/
+BaseType_t sendToADCQueue(unsigned short val)
+{
+    return xQueueSend(adc_appData.adcQueue, &val, portMAX_DELAY);
+}
+
+BaseType_t sendToADCQueueFromISR(unsigned short val)
+{
+    return xQueueSendFromISR(adc_appData.adcQueue, &val, 0);
+}
+
+void activateReadySignal(void)
+{
+    adc_appData.ready = true;
+}
+
+void addToSampleValue(ADC_SAMPLE val)
+{
+    adc_appData.curVal += val;
+}
+
+void averageSample(void)
+{
+    adc_appData.curVal = adc_appData.curVal / MAX_SAMPLE_SIZE;
+}
 
 // *****************************************************************************
 // *****************************************************************************
@@ -93,10 +116,21 @@ ADC_APP_DATA adc_appData;
 // *****************************************************************************
 // *****************************************************************************
 
-
-/* TODO:  Add any necessary local functions.
-*/
-
+void sendMessage(void)
+{
+    messageStructure newMessage;
+    // Deconstruct
+    newMessage.sender = SERVER;
+    newMessage.messageNumber = 0;
+    newMessage.messageType = SENSOR;
+    newMessage.messageSize = sizeof(unsigned int);
+    newMessage.messageContent[0] = (adc_appData.curVal & 0xFF000000) >> 24;
+    newMessage.messageContent[1] = (adc_appData.curVal & 0x00FF0000) >> 16;
+    newMessage.messageContent[2] = (adc_appData.curVal & 0x0000FF00) >> 8;
+    newMessage.messageContent[3] = (adc_appData.curVal & 0x000000FF);
+    // Send
+    sendToTXQueue(newMessage);
+}
 
 // *****************************************************************************
 // *****************************************************************************
@@ -114,13 +148,12 @@ ADC_APP_DATA adc_appData;
 
 void ADC_APP_Initialize ( void )
 {
-    /* Place the App state machine in its initial state. */
-    adc_appData.state = ADC_APP_STATE_INIT;
-
-    
-    /* TODO: Initialize your application's state machine and other
-     * parameters.
-     */
+    // Right now these values may not be right but they're placeholders
+    adc_appData.adcQueue = xQueueCreate(16, sizeof(unsigned int));
+    // Creating a private member to hold the current sensor value.
+    adc_appData.curVal = 0;
+    // Making sure the signal to be ready to read data is initially false
+    adc_appData.ready = false;
 }
 
 
@@ -134,38 +167,17 @@ void ADC_APP_Initialize ( void )
 
 void ADC_APP_Tasks ( void )
 {
-
-    /* Check the application's current state. */
-    switch ( adc_appData.state )
-    {
-        /* Application's initial state. */
-        case ADC_APP_STATE_INIT:
-        {
-            bool appInitialized = true;
-       
-        
-            if (appInitialized)
-            {
-            
-                adc_appData.state = ADC_APP_STATE_SERVICE_TASKS;
-            }
-            break;
-        }
-
-        case ADC_APP_STATE_SERVICE_TASKS:
-        {
-        
-            break;
-        }
-
-        /* TODO: implement your application state machine.*/
-        
-
-        /* The default state should never be executed. */
-        default:
-        {
-            /* TODO: Handle error in application's state machine. */
-            break;
+    // Enable the ADC
+    DRV_ADC_Open();
+    
+    unsigned short recvVal;
+    while(1) {
+        // Reading from ADC interrupt to send to main app queue
+        if(adc_appData.ready == true) {
+            // Value manipulation
+            // Send out to mainapp for calculation (maybe)
+            sendMessage();
+            adc_appData.ready = false;
         }
     }
 }

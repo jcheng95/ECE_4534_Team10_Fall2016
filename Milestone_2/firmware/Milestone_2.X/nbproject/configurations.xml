@@ -39,6 +39,7 @@
         <itemPath>../src/uart_rx_public.h</itemPath>
         <itemPath>../src/tx_buffer_public.h</itemPath>
         <itemPath>../src/adc_app.h</itemPath>
+        <itemPath>../src/adc_app_public.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="framework" projectFiles="true">
         <logicalFolder name="f1" displayName="driver" projectFiles="true">

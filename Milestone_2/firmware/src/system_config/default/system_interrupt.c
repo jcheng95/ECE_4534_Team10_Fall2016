@@ -70,6 +70,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include <queue.h>
 #include "common.h"
 #include "tx_buffer_public.h"
+#include "adc_app_public.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -97,6 +98,18 @@ BaseType_t sendToTXBufferQueueFromISR(char msg)
 
 void IntHandlerDrvAdc(void)
 {
+    int i;
+    // Enable the ready to read signal for after the ISR is complete
+    activateReadySignal();
+    
+    // Looping through the number of samples
+    for(i = 0; i < MAX_SAMPLE_SIZE; i++) {
+        addToSampleValue(PLIB_ADC_ResultGetByIndex(ADC_ID_1, i));
+    }
+    // Averages out the value
+    averageSample();
+    
+    PLIB_ADC_SampleAutoStartEnable(ADC_ID_1);
     /* Clear ADC Interrupt Flag */
     PLIB_INT_SourceFlagClear(INT_ID_0, INT_SOURCE_ADC_1);
 }

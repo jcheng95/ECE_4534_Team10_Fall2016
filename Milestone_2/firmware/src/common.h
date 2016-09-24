@@ -39,6 +39,9 @@
 #define START_BYTE  ((unsigned char) 0xB4)
 #define END_BYTE    ((unsigned char) 0xC7)
 
+/// OTHER CONSTANTS ///
+#define MAX_SAMPLE_SIZE 16
+
 typedef struct {
     unsigned char sender;
     unsigned char messageNumber;

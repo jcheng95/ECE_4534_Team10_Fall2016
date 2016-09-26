@@ -41,10 +41,13 @@ def convertFromMessage(message):
 def convertToMessage(messageType, message):
     global SEND_COUNT
 
+    SEND_COUNT %= 256
+
     # Client / Message sender
     sender = COMPUTER
     # The message number for the number of messages this client has sent
     messageNo = SEND_COUNT
+
     # Message type
     type = messageType
     # Message size

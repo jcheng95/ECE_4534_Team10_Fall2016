@@ -7,6 +7,9 @@ A simple echo client
 import socket
 from common import *
 
+SEND_COUNT = 0
+RECEIVE_COUNT = 0
+
 # Converts an array of bytes to a messageStructure object that can be used to send out a message
 # Really this is just a fancy way of extracting data I want to keep a hold of in a class
 def convertFromMessage(message):
@@ -62,8 +65,8 @@ def convertToCentimeter(messageContent):
     return convertedVal
 
 def main():
-    host = '192.168.71.135'
-    port = 59784
+    host = '10.0.0.1'
+    port = 2000
     size = 1024
 
     sensorData = 0
@@ -79,13 +82,13 @@ def main():
             inMessage = convertFromMessage(data)
 
             if inMessage.messageType == SENSOR:
-                sensorData = convertToCentimeter(inMessage.messageContent)
+                #sensorData = convertToCentimeter(inMessage.messageContent)
                 # Parse data -> send to visualization
-                print('{}'.format(CHAR_TO_SENDER[inMessage.sender],
+                print('{} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
                                   CHAR_TO_MESSAGE[inMessage.messageType],
-                                  sensorData))
+                                  inMessage.messageContent))
 
-                acknowledgeMessage = convertToMessage(ACKNOWLEDGE, inMessage.messageContent)
+                acknowledgeMessage = convertToMessage(ACKNOWLEDGE, b'\x01\x00\x13\xb3')
                 s.send(acknowledgeMessage)
     s.close()
 

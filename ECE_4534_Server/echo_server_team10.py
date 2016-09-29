@@ -19,6 +19,10 @@ data = b''
 SEND_COUNT = 0
 RECEIVE_COUNT = 0
 
+# IP Data
+HOST_IP = ''
+PORT_NUMBER = 2000
+
 # Converts an array of bytes to a messageStructure object that can be used to send out a message
 # Really this is just a fancy way of extracting data I want to keep a hold of in a class
 def convertFromMessage(message):
@@ -67,6 +71,10 @@ def convertToMessage(messageType, message):
     # Return the full message
     return START_BYTE + incompleteMessage + END_BYTE
 
+def convertListToVal(message):
+    val = (message[0] << 24) | (message[1] << 16) | (message[2] << 8) | message[3]
+    return val
+
 def listening():
     global clientList
     global data
@@ -74,8 +82,8 @@ def listening():
     sensorData = 0
 
     # Socket parameters
-    host = ''
-    port = 2000
+    host = HOST_IP
+    port = PORT_NUMBER
     backlog = 10
     size = 1024
 
@@ -101,6 +109,7 @@ def listening():
 
                 # Message exists
                 if data:
+                    # Ignore the WiFly "*HELLO*" message when the WiFly connects
                     if data == b'*HELLO*':
                         pass
                     else:
@@ -111,19 +120,49 @@ def listening():
                             # parse something here for display
                             print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
                                                                  CHAR_TO_MESSAGE[inMessage.messageType],
-                                                                 sensorData))
-                        # Sensor data from PIC
-                        elif inMessage.messageType == SENSOR:
+                                                                 inMessage.messageContent))
+                        # Command by Pac-Man Control PIC
+                        elif inMessage.messageType == PACMAN_COMMAND:
                             # parse something here for display
-                            print('Receive: {} - {} : {} cm'.format(CHAR_TO_SENDER[inMessage.sender],
+                            print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
                                                                  CHAR_TO_MESSAGE[inMessage.messageType],
-                                                                 sensorData))
-                        # Sensor data acknowledge from a computer
-                        elif inMessage.messageType == ACKNOWLEDGE:
+                                                                 inMessage.messageContent))
+                        # Command by Ghost Control PIC
+                        elif inMessage.messageType == GHOST_COMMAND:
                             # parse something here for display
-                            print('Receive: {} - {} : {} cm'.format(CHAR_TO_SENDER[inMessage.sender],
+                            print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
                                                                  CHAR_TO_MESSAGE[inMessage.messageType],
-                                                                 sensorData))
+                                                                 inMessage.messageContent))
+                        # Sensor data from Pac-Man Rover and Sensors PIC
+                        elif inMessage.messageType == PACMAN_SENSOR:
+                            # parse something here for display
+                            print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
+                                                                 CHAR_TO_MESSAGE[inMessage.messageType],
+                                                                 inMessage.messageContent))
+                        # Movement Completion message from Pac-Man Rover and Sensors PIC
+                        elif inMessage.messageType == PACMAN_ROVER_COMPLETE:
+                            # parse something here for display
+                            print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
+                                                                 CHAR_TO_MESSAGE[inMessage.messageType],
+                                                                 inMessage.messageContent))
+                        # Sensor data from Ghost Rover and Sensors PIC
+                        elif inMessage.messageType == GHOST_SENSOR:
+                            # parse something here for display
+                            print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
+                                                                 CHAR_TO_MESSAGE[inMessage.messageType],
+                                                                 inMessage.messageContent))
+                        # Movement Completion message from Ghost Rover and Sensors PIC
+                        elif inMessage.messageType == GHOST_ROVER_COMPLETE:
+                            # parse something here for display
+                            print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
+                                                                 CHAR_TO_MESSAGE[inMessage.messageType],
+                                                                 inMessage.messageContent))
+                        # Token order message from computer
+                        elif inMessage.messageType == INITIAL_ORDER:
+                            # parse something here for display
+                            print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
+                                                                 CHAR_TO_MESSAGE[inMessage.messageType],
+                                                                 inMessage.messageContent))
 
                         #Do not send the message to master socket and the client who has sent us the message
                         for sockets in clientList:
@@ -134,6 +173,9 @@ def listening():
                                     # broken socket connection may be, chat client pressed ctrl+c for example
                                     sockets.close()
                                     clientList.remove(sockets)
+    for sockets in clientList:
+        sockets.close()
+        clientList.remove(sockets)
 
 def main():
     global data

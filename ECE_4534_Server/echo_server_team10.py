@@ -71,9 +71,16 @@ def convertToMessage(messageType, message):
     # Return the full message
     return START_BYTE + incompleteMessage + END_BYTE
 
-def convertListToVal(message):
+# Converts the message contents of a sensor data message into readable content
+def convertListToSensorData(message):
     val = (message[0] << 24) | (message[1] << 16) | (message[2] << 8) | message[3]
     return val
+
+# Converts a 16-bit integer from the ADC into centimeters
+def convertSensorDataToCentimeters(value):
+    sensorData = value & 0xFF
+
+    return sensorData
 
 def listening():
     global clientList
@@ -132,7 +139,7 @@ def listening():
                             # parse something here for display
                             print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
                                                                  CHAR_TO_MESSAGE[inMessage.messageType],
-                                                                 inMessage.messageContent))
+                                                                 convertListToSensorData(inMessage.messageContent)))
                         # Sensor data from Pac-Man Rover and Sensors PIC
                         elif inMessage.messageType == PACMAN_SENSOR:
                             # parse something here for display
@@ -144,7 +151,7 @@ def listening():
                             # parse something here for display
                             print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
                                                                  CHAR_TO_MESSAGE[inMessage.messageType],
-                                                                 inMessage.messageContent))
+                                                                 convertListToSensorData(inMessage.messageContent)))
                         # Sensor data from Ghost Rover and Sensors PIC
                         elif inMessage.messageType == GHOST_SENSOR:
                             # parse something here for display

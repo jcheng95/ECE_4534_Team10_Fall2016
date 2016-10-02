@@ -29,10 +29,10 @@ def convertFromMessage(message):
     # Message type
     messageType = message[3]
     # Message size <- only used for double-checking a message wasn't lost
-    messagesize = message[4]
+    messageSize = message[4]
     msg = []
     # Takes the message as a bytes string
-    for x in range (0, messagesize):
+    for x in range (0, messageSize):
         try:
             msg.append(message[x + 5])
         except:
@@ -67,25 +67,22 @@ def convertToMessage(messageType, message):
     return START_BYTE + incompleteMessage + END_BYTE
 
 # Converts the message contents of a sensor data message into readable content
-def convertToCentimeter(messageContent):
-    convertedVal = messageContent[0]
+def convertListToSensorData(message):
+    val = (message[0] << 24) | (message[1] << 16) | (message[2] << 8) | message[3]
+    return val
 
-    return convertedVal
+# Converts a 16-bit integer from the ADC into centimeters
+def convertSensorDataToCentimeters(value):
+    sensorData = value & 0xFF
+
+    return sensorData
 
 # Converts the order of tokens into individual digits then to bytes
 def byteify(numbers):
-    temp = numbers
-    fourth = temp % 10
-    temp /= 10
-
-    third = temp % 10
-    temp /= 10
-
-    second = temp % 10
-    temp /= 10
-
-    first = temp % 10
-    temp /= 10
+    first = int(numbers[0])
+    second = int(numbers[1])
+    third = int(numbers[2])
+    fourth = int(numbers[3])
 
     return first, second, third, fourth
 
@@ -122,39 +119,38 @@ def main():
                 print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
                                                      CHAR_TO_MESSAGE[inMessage.messageType],
                                                      inMessage.messageContent))
-            # Command by Pac-Man Cntrol PIC
+            # Command by Pac-Man Control PIC
             elif inMessage.messageType == PACMAN_COMMAND:
                 # parse something here for display
                 print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
                                                      CHAR_TO_MESSAGE[inMessage.messageType],
                                                      inMessage.messageContent))
-            # Sensor data acknowledge from a computer
+            # Command by Ghost Control PIC
             elif inMessage.messageType == GHOST_COMMAND:
                 # parse something here for display
                 print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
                                                      CHAR_TO_MESSAGE[inMessage.messageType],
                                                      inMessage.messageContent))
+            # Sensor data from Pac-Man Rover and Sensors PIC
             elif inMessage.messageType == PACMAN_SENSOR:
                 # parse something here for display
                 print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
                                                      CHAR_TO_MESSAGE[inMessage.messageType],
-                                                     inMessage.messageContent))
+                                                     convertListToSensorData(inMessage.messageContent)))
+            # Movement Completion message from Pac-Man Rover and Sensors PIC
             elif inMessage.messageType == PACMAN_ROVER_COMPLETE:
                 # parse something here for display
                 print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
                                                      CHAR_TO_MESSAGE[inMessage.messageType],
                                                      inMessage.messageContent))
+            # Sensor data from Ghost Rover and Sensors PIC
             elif inMessage.messageType == GHOST_SENSOR:
                 # parse something here for display
                 print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
                                                      CHAR_TO_MESSAGE[inMessage.messageType],
-                                                     inMessage.messageContent))
+                                                     convertListToSensorData(inMessage.messageContent)))
+            # Movement Completion message from Ghost Rover and Sensors PIC
             elif inMessage.messageType == GHOST_ROVER_COMPLETE:
-                # parse something here for display
-                print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
-                                                     CHAR_TO_MESSAGE[inMessage.messageType],
-                                                     inMessage.messageContent))
-            elif inMessage.messageType == INITIAL_ORDER:
                 # parse something here for display
                 print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
                                                      CHAR_TO_MESSAGE[inMessage.messageType],

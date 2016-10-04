@@ -59,6 +59,11 @@ extern "C" {
 #define GHOST_ROVER_COMPLETE    0x07
 #define INITIAL_ORDER           0x08
     
+/// Directions ///
+#define FORWARD     0x01
+#define BACKWARD    0x02
+#define LEFT        0x03
+#define RIGHT       0x04
 
 // FRAME DELIMITERS //
 #define START_BYTE  ((unsigned char) 0xB4)

@@ -65,11 +65,13 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "motor_control.h"
 #include "uart_tx.h"
 #include "uart_rx.h"
+#include "adc_1.h"
 #include "system_definitions.h"
 
 #include <queue.h>
 #include "common.h"
 #include "tx_buffer_public.h"
+#include "adc_1_public.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -77,6 +79,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 // *****************************************************************************
 QueueHandle_t bufferQueue;
+//unsigned int curVal;
 
 void initializeBufferQueue()
 {
@@ -95,16 +98,32 @@ BaseType_t sendToTXBufferQueueFromISR(char msg)
     return xQueueSendFromISR(bufferQueue, &msg, 0);
 }
 
+void IntHandlerDrvTmrInstance0(void)
+{
+    //sendToADCAppQueueFromISR(curVal);
+    // Clear the interrupt flag
+    PLIB_INT_SourceFlagClear(INT_ID_0,INT_SOURCE_TIMER_2);
+}
+
 void IntHandlerDrvAdc(void)
 {
+    int i;
+    unsigned int curVal = 0;
+    //Read data before clearing interrupt flag
+    for(i = 0; i < MAX_SAMPLE_SIZE; i++)
+        curVal += PLIB_ADC_ResultGetByIndex(ADC_ID_1, i);
+    curVal = curVal / MAX_SAMPLE_SIZE;
+    
+    sendToADCAppQueueFromISR(curVal);
+    
     /* Clear ADC Interrupt Flag */
     PLIB_INT_SourceFlagClear(INT_ID_0, INT_SOURCE_ADC_1);
 }
 
 void IntHandlerDrvUsartInstance0(void)
 {
-    char sendByte;
-    char recvByte;
+    unsigned char sendByte;
+    unsigned char recvByte;
     
     // Interrupt driven by the receive
     if(PLIB_INT_SourceFlagGet(INT_ID_0, INT_SOURCE_USART_1_RECEIVE)) {

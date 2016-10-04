@@ -1,7 +1,7 @@
-build/default/production/_ext/1360937237/motor_control.o:  \
- ../src/motor_control.c  \
-../src/motor_control.h  \
- ../src/system_config/default/system_config.h  \
+build/default/production/_ext/1360937237/adc_1.o:  \
+../src/adc_1.c  \
+ ../src/adc_1.h  \
+../src/system_config/default/system_config.h  \
  ../src/system_config/default/system_definitions.h  \
  ../../../../../microchip/harmony/v1_08_01/framework/system/common/sys_common.h  \
  ../../../../../microchip/harmony/v1_08_01/framework/system/common/sys_module.h  \
@@ -292,9 +292,9 @@ build/default/production/_ext/1360937237/motor_control.o:  \
  ../src/mainapp.h  \
 ../src/common.h  \
 ../src/motor_control.h  \
+ ../src/mainapp_public.h  \
 ../src/uart_tx.h  \
- ../src/tx_buffer_public.h  \
-../src/uart_rx.h  \
-../src/mainapp_public.h  \
- ../src/adc_1.h  \
-../src/motor_control_public.h 
+../src/tx_buffer_public.h  \
+ ../src/uart_rx.h  \
+../src/adc_1.h  \
+../src/adc_1_public.h 

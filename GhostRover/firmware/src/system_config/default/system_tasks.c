@@ -58,6 +58,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "motor_control.h"
 #include "uart_tx.h"
 #include "uart_rx.h"
+#include "adc_1.h"
 
 
 // *****************************************************************************
@@ -73,6 +74,7 @@ static void _MAINAPP_Tasks(void);
 static void _MOTOR_CONTROL_Tasks(void);
 static void _UART_TX_Tasks(void);
 static void _UART_RX_Tasks(void);
+static void _ADC_1_Tasks(void);
 
 
 // *****************************************************************************
@@ -114,6 +116,11 @@ void SYS_Tasks ( void )
     /* Create OS Thread for UART_RX Tasks. */
     xTaskCreate((TaskFunction_t) _UART_RX_Tasks,
                 "UART_RX Tasks",
+                1024, NULL, 1, NULL);
+
+    /* Create OS Thread for ADC_1 Tasks. */
+    xTaskCreate((TaskFunction_t) _ADC_1_Tasks,
+                "ADC_1 Tasks",
                 1024, NULL, 1, NULL);
 
     /**************
@@ -210,6 +217,23 @@ static void _UART_RX_Tasks(void)
     while(1)
     {
         UART_RX_Tasks();
+    }
+}
+
+
+/*******************************************************************************
+  Function:
+    void _ADC_1_Tasks ( void )
+
+  Summary:
+    Maintains state machine of ADC_1.
+*/
+
+static void _ADC_1_Tasks(void)
+{
+    while(1)
+    {
+        ADC_1_Tasks();
     }
 }
 

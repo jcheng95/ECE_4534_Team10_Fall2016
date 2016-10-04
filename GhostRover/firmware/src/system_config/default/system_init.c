@@ -100,6 +100,8 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // Section: Driver Initialization Data
 // *****************************************************************************
 // *****************************************************************************
+// <editor-fold defaultstate="collapsed" desc="DRV_Timer Initialization Data">
+// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="DRV_USART Initialization Data">
 // </editor-fold>
 
@@ -173,6 +175,9 @@ void SYS_Initialize ( void* data )
     /* Initialize ADC */
     DRV_ADC_Initialize();
 
+    /*Initialize TMR0 */
+    DRV_TMR0_Initialize();
+ 
     sysObj.drvUsart0 = DRV_USART_Initialize(DRV_USART_INDEX_0, (SYS_MODULE_INIT *)NULL);
     SYS_INT_VectorPrioritySet(INT_VECTOR_UART1, INT_PRIORITY_LEVEL1);
     SYS_INT_VectorSubprioritySet(INT_VECTOR_UART1, INT_SUBPRIORITY_LEVEL0);
@@ -190,6 +195,7 @@ void SYS_Initialize ( void* data )
     MOTOR_CONTROL_Initialize();
     UART_TX_Initialize();
     UART_RX_Initialize();
+    ADC_1_Initialize();
 }
 
 

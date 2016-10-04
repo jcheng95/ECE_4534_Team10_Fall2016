@@ -5,7 +5,7 @@
     Microchip Technology Inc.
   
   File Name:
-    mainapp.c
+    adc_1.c
 
   Summary:
     This file contains the source code for the MPLAB Harmony application.
@@ -53,11 +53,9 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 // *****************************************************************************
 
-#include "mainapp.h"
+#include "adc_1.h"
 
-#include "mainapp_public.h"
-#include "framework/driver/adc/drv_adc_static.h"
-#include "peripheral/adc/plib_adc.h"
+#include "adc_1_public.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -80,7 +78,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
     Application strings and buffers are be defined outside this structure.
 */
 
-MAINAPP_DATA mainappData;
+ADC_1_DATA adc_1Data;
 
 // *****************************************************************************
 // *****************************************************************************
@@ -88,14 +86,14 @@ MAINAPP_DATA mainappData;
 // *****************************************************************************
 // *****************************************************************************
 
-BaseType_t sendToMainAppQueue(messageStructure msg)
+BaseType_t sendToADCAppQueue(unsigned int msg)
 {
-    return xQueueSend(mainappData.mainQueue, &msg, portMAX_DELAY);
+    return xQueueSend(adc_1Data.adcQueue, &msg, portMAX_DELAY);
 }
 
-BaseType_t sendToMainAppQueueFromISR(messageStructure msg)
+BaseType_t sendToADCAppQueueFromISR(unsigned int msg)
 {
-    return xQueueSendFromISR(mainappData.mainQueue, &msg, 0);
+    return xQueueSendFromISR(adc_1Data.adcQueue, &msg, 0);
 }
 
 // *****************************************************************************
@@ -104,24 +102,18 @@ BaseType_t sendToMainAppQueueFromISR(messageStructure msg)
 // *****************************************************************************
 // *****************************************************************************
 
-// Sending a debug message
-void sendDebugMessage(unsigned int val)
+// This function converts the results of the ADC read into human-readable centimeters
+int convertToCentimeters(unsigned int val)
 {
-    messageStructure newMessage;
-    // Deconstruct
-    newMessage.sender = MY_SENDER;
-    newMessage.messageNumber = 0;
-    newMessage.messageType = DEBUG; // will need to change for arbitration in message type
-    newMessage.messageSize = sizeof(unsigned int);
-    newMessage.messageContent[0] = (val & 0xFF000000) >> 24;
-    newMessage.messageContent[1] = (val & 0x00FF0000) >> 16;
-    newMessage.messageContent[2] = (val & 0x0000FF00) >> 8;
-    newMessage.messageContent[3] = (val & 0x000000FF);
-    // Send
-    sendToTXQueue(newMessage);
+   unsigned int convertedResult;
+   
+   convertedResult = val;
+   
+   return convertedResult;
 }
 
-void sendSensorMessage(char* val)
+// Sends sensor data, with the data type int, to mainapp
+void sendSensorData(unsigned int val)
 {
     messageStructure newMessage;
     newMessage.sender = MY_SENDER;
@@ -129,32 +121,12 @@ void sendSensorMessage(char* val)
     newMessage.messageType = GHOST_SENSOR;
     newMessage.messageSize = 4;
     // MSB in index 0
-    newMessage.messageContent[0] = val[0];
-    newMessage.messageContent[1] = val[1];
-    newMessage.messageContent[2] = val[2];
-    newMessage.messageContent[3] = val[3];
+    newMessage.messageContent[0] = (val & 0xFF000000) >> 24;
+    newMessage.messageContent[1] = (val & 0x00FF0000) >> 16;
+    newMessage.messageContent[2] = (val & 0x0000FF00) >> 8;
+    newMessage.messageContent[3] = (val & 0x000000FF);
     
-    sendToTXQueue(newMessage);
-}
-
-void sendCommandMessage(unsigned char direction, unsigned char xPos, unsigned char yPos)
-{
-    messageStructure newMessage;
-    newMessage.sender = MY_SENDER;
-    newMessage.messageNumber = 0;
-    newMessage.messageType = GHOST_COMMAND;
-    newMessage.messageSize = 4;
-    newMessage.messageContent[0] = direction;
-    newMessage.messageContent[1] = xPos;
-    newMessage.messageContent[2] = yPos;
-    newMessage.messageContent[3] = 0x00;
-    
-    sendToTXQueue(newMessage);
-}
-
-void convertToCentimeters(unsigned int val)
-{
-    // Calculate
+    sendToMainAppQueue(newMessage);
 }
 
 // *****************************************************************************
@@ -165,53 +137,41 @@ void convertToCentimeters(unsigned int val)
 
 /*******************************************************************************
   Function:
-    void MAINAPP_Initialize ( void )
+    void ADC_1_Initialize ( void )
 
   Remarks:
-    See prototype in mainapp.h.
+    See prototype in adc_1.h.
  */
 
-void MAINAPP_Initialize ( void )
+void ADC_1_Initialize ( void )
 {
-    mainappData.mainQueue = xQueueCreate(16, sizeof(messageStructure));
+    adc_1Data.adcQueue = xQueueCreate(16, sizeof(unsigned int));
 }
 
 
 /******************************************************************************
   Function:
-    void MAINAPP_Tasks ( void )
+    void ADC_1_Tasks ( void )
 
   Remarks:
-    See prototype in mainapp.h.
+    See prototype in adc_1.h.
  */
 
-void MAINAPP_Tasks ( void )
+void ADC_1_Tasks ( void )
 {
-    messageStructure tempMsg;
-
-    // Enabling USART for communication
-    PLIB_USART_Enable(USART_ID_1);
-
+    unsigned int tempMsg;
+    
+    // Enabling the ADC for sensor data
+    //DRV_ADC_Open();
+    
+    // Activates the timer driver
+    // Required in order for the timer to work
+    //DRV_TMR0_Start();
+    
     while(1) {
-        if(xQueueReceive(mainappData.mainQueue, &tempMsg, portMAX_DELAY)) {
-            // Filter messages
-            if(tempMsg.messageType == INITIAL_ORDER) {
-                DRV_ADC_Open();
-                // Filter out content
-                //sendDebugMessage(300);
-            }
-            else if(tempMsg.messageType == GHOST_COMMAND) {
-                // Filter out content
-                sendCommandMessage(FORWARD, 0x01, 0x02);
-            }
-            else if(tempMsg.messageType == DEBUG) {
-                // Filter out content
-                sendDebugMessage(300);
-            }
-            else if(tempMsg.messageType == GHOST_SENSOR) {
-                // Filter out content
-                sendSensorMessage(tempMsg.messageContent);
-            }
+        if(xQueueReceive(adc_1Data.adcQueue, &tempMsg, portMAX_DELAY)) {
+            // Process and send to TX queue
+            sendSensorData(convertToCentimeters(tempMsg));
         }
     }
 }

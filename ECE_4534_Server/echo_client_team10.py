@@ -22,6 +22,7 @@ def convertFromMessage(message):
 
     # Increment the send counter
     RECEIVE_COUNT += 1
+    RECEIVE_COUNT = RECEIVE_COUNT % 256
     # The sender / client of the message
     client = message[1]
     # The message number for the number of messages this client has received
@@ -46,8 +47,6 @@ def convertFromMessage(message):
 def convertToMessage(messageType, message):
     global SEND_COUNT
 
-    SEND_COUNT %= 256
-
     # Client / Message sender
     sender = SIMULATION
     # The message number for the number of messages this client has sent
@@ -62,6 +61,7 @@ def convertToMessage(messageType, message):
 
     # Increment the send counter
     SEND_COUNT += 1
+    SEND_COUNT = SEND_COUNT % 256
 
     # Return the full message
     return START_BYTE + incompleteMessage + END_BYTE
@@ -118,7 +118,7 @@ def main():
                 # parse something here for display
                 print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
                                                      CHAR_TO_MESSAGE[inMessage.messageType],
-                                                     inMessage.messageContent))
+                                                     convertListToSensorData(inMessage.messageContent)))
             # Command by Pac-Man Control PIC
             elif inMessage.messageType == PACMAN_COMMAND:
                 # parse something here for display

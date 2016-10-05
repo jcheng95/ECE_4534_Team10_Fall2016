@@ -161,10 +161,11 @@ void sendCompleteMessage(void)
     sendToTXQueue(newMessage);
 }
 
-void convertToCentimeters(char* val)
+unsigned int convertToCentimeters(char* val)
 {
     // Calculate
-    int convertedVal = ((val[0] << 24) | (val[1] << 16) | (val[2] << 8) | val[3]);
+    unsigned int convertedVal = ((val[0] << 24) | (val[1] << 16) | (val[2] << 8) | val[3]);
+    return convertedVal;
 }
 
 // *****************************************************************************
@@ -225,8 +226,6 @@ void MAINAPP_Tasks ( void )
         }
     }
 }
-
- 
 
 /*******************************************************************************
  End of File

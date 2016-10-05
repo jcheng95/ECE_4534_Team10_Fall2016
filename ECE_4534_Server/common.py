@@ -23,6 +23,13 @@ PACMAN_ROVER_COMPLETE = 0x05
 GHOST_SENSOR          = 0x06
 GHOST_ROVER_COMPLETE  = 0x07
 INITIAL_ORDER         = 0x08
+GAME_OVER             = 0x0A
+
+# Direction Types
+FORWARD     = 0x01
+BACKWARD    = 0x02
+LEFT        = 0x03
+RIGHT       = 0x04
 
 # Dictionaries for easy conversions
 CHAR_TO_SENDER = {}
@@ -50,6 +57,7 @@ CHAR_TO_MESSAGE[PACMAN_ROVER_COMPLETE]          = "Pac-Man Rover Movement Comple
 CHAR_TO_MESSAGE[GHOST_SENSOR]                   = "Ghost Sensor Data"
 CHAR_TO_MESSAGE[GHOST_ROVER_COMPLETE]           = "Ghost Rover Movement Completed"
 CHAR_TO_MESSAGE[INITIAL_ORDER]                  = "Order That Tokens Need To Be Picked Up"
+CHAR_TO_MESSAGE[GAME_OVER]                      = "Game-over Message"
 
 class messageStructure:
     def __init__(self, sender, messageType, messageContent):

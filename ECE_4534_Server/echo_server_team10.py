@@ -6,12 +6,14 @@ Echo server used by the Raspberry Pi
 """
 
 import socket, select
-import time
+from queue import Queue
 from threading import Thread
 from common import *
 
 # Array of clients
 clientList = []
+# Queue of socket messages to be sent out
+messages = Queue()
 # String for message
 data = b''
 
@@ -29,6 +31,7 @@ def convertFromMessage(message):
     global RECEIVE_COUNT
 
     # Increment the send counter
+    RECEIVE_COUNT = RECEIVE_COUNT % 256
     RECEIVE_COUNT += 1
     # The sender / client of the message
     client = message[1]
@@ -67,6 +70,7 @@ def convertToMessage(messageType, message):
 
     # Increment the send counter
     SEND_COUNT += 1
+    SEND_COUNT = SEND_COUNT % 256
 
     # Return the full message
     return START_BYTE + incompleteMessage + END_BYTE
@@ -82,6 +86,32 @@ def convertSensorDataToCentimeters(value):
 
     return sensorData
 
+# Parse socket packet for multiple messages
+def separateMessages(packet):
+    sender = 0
+    count = 0
+    type = 0
+    size = 0
+    msg = []
+    for x in range(0, len(packet)):
+        if packet[x] == START_BYTE:
+            x += 1
+            sender = packet[x]
+            x += 1
+            count = packet[x]
+            x += 1
+            type = packet[x]
+            x += 1
+            size = packet[x]
+            x += 1
+            for y in range(0, size):
+                msg[y] = packet[x]
+                x += 1
+            if packet[x] == END_BYTE:
+                messages.put(messageStructure(sender, type, msg))
+
+
+
 def listening():
     global clientList
     global data
@@ -91,8 +121,8 @@ def listening():
     # Socket parameters
     host = HOST_IP
     port = PORT_NUMBER
-    backlog = 10
-    size = 1024
+    backlog = 15
+    size = 10
 
     # Socket object
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

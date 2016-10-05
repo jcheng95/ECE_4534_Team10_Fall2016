@@ -75,11 +75,6 @@ def convertToMessage(messageType, message):
     # Return the full message
     return START_BYTE + incompleteMessage + END_BYTE
 
-# Converts the message contents of a sensor data message into readable content
-def convertListToSensorData(message):
-    val = (message[0] << 24) | (message[1] << 16) | (message[2] << 8) | message[3]
-    return val
-
 # Converts a 16-bit integer from the ADC into centimeters
 def convertSensorDataToCentimeters(value):
     sensorData = value & 0xFF
@@ -110,7 +105,10 @@ def separateMessages(packet):
             if packet[x] == END_BYTE:
                 messages.put(messageStructure(sender, type, msg))
 
-
+# Converts the message contents of a sensor data message into readable content
+def convertListToSensorData(message):
+    val = (message[0] << 24) | (message[1] << 16) | (message[2] << 8) | message[3]
+    return val
 
 def listening():
     global clientList
@@ -158,7 +156,7 @@ def listening():
                             print('Receive: {} ({}) - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
                                                                       inMessage.messageNumber,
                                                                       CHAR_TO_MESSAGE[inMessage.messageType],
-                                                                      inMessage.messageContent))
+                                                                      convertListToSensorData(inMessage.messageContent)))
                         # Command by Pac-Man Control PIC
                         elif inMessage.messageType == PACMAN_COMMAND:
                             # parse something here for display
@@ -172,14 +170,14 @@ def listening():
                             print('Receive: {} ({}) - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
                                                                       inMessage.messageNumber,
                                                                       CHAR_TO_MESSAGE[inMessage.messageType],
-                                                                      convertListToSensorData(inMessage.messageContent)))
+                                                                      inMessage.messageContent))
                         # Sensor data from Pac-Man Rover and Sensors PIC
                         elif inMessage.messageType == PACMAN_SENSOR:
                             # parse something here for display
                             print('Receive: {} ({}) - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
                                                                       inMessage.messageNumber,
                                                                       CHAR_TO_MESSAGE[inMessage.messageType],
-                                                                      inMessage.messageContent))
+                                                                      convertListToSensorData(inMessage.messageContent)))
                         # Movement Completion message from Pac-Man Rover and Sensors PIC
                         elif inMessage.messageType == PACMAN_ROVER_COMPLETE:
                             # parse something here for display
@@ -193,7 +191,7 @@ def listening():
                             print('Receive: {} ({}) - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
                                                                       inMessage.messageNumber,
                                                                       CHAR_TO_MESSAGE[inMessage.messageType],
-                                                                      inMessage.messageContent))
+                                                                      convertListToSensorData(inMessage.messageContent)))
                         # Movement Completion message from Ghost Rover and Sensors PIC
                         elif inMessage.messageType == GHOST_ROVER_COMPLETE:
                             # parse something here for display

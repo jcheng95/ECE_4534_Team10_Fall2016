@@ -206,6 +206,13 @@ def listening():
                                                                       inMessage.messageNumber,
                                                                       CHAR_TO_MESSAGE[inMessage.messageType],
                                                                       inMessage.messageContent))
+                        # Game-over message was sent
+                        elif inMessage.messageType == GAME_OVER:
+                            # parse something here for display
+                            print('Receive: {} ({}) - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
+                                                                      inMessage.messageNumber,
+                                                                      CHAR_TO_MESSAGE[inMessage.messageType],
+                                                                      inMessage.messageContent))
 
                         #Do not send the message to master socket and the client who has sent us the message
                         for sockets in clientList:

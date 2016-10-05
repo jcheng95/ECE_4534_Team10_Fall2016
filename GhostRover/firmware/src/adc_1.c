@@ -107,8 +107,8 @@ unsigned int convertToCentimeters(unsigned int val)
 {
    unsigned int convertedResult;
    
-   convertedResult = (unsigned int)exp(((double)val - 1333.2) / -285.9);
-   
+   //convertedResult = (unsigned int)exp(((double)val - 1333.2) / -285.9);
+   convertedResult = (unsigned int)(47457.4 / pow((double)val, 1.29534));
    return convertedResult;
 }
 

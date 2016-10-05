@@ -137,7 +137,7 @@ def main():
             elif inMessage.messageType == PACMAN_COMMAND:
                 # parse something here for display
                 print('Receive: {} ({}) - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
-                                                          inMessage.messagNumber,
+                                                          inMessage.messageNumber,
                                                           CHAR_TO_MESSAGE[inMessage.messageType],
                                                           inMessage.messageContent))
             # Command by Ghost Control PIC
@@ -151,9 +151,9 @@ def main():
             elif inMessage.messageType == PACMAN_SENSOR:
                 # parse something here for display
                 print('Receive: {} ({}) - {} : {} cm'.format(CHAR_TO_SENDER[inMessage.sender],
-                                                          inMessage.messageNumber,
-                                                          CHAR_TO_MESSAGE[inMessage.messageType],
-                                                          convertListToSensorData(inMessage.messageContent)))
+                                                             inMessage.messageNumber,
+                                                             CHAR_TO_MESSAGE[inMessage.messageType],
+                                                             convertListToSensorData(inMessage.messageContent)))
             # Movement Completion message from Pac-Man Rover and Sensors PIC
             elif inMessage.messageType == PACMAN_ROVER_COMPLETE:
                 # parse something here for display
@@ -165,9 +165,9 @@ def main():
             elif inMessage.messageType == GHOST_SENSOR:
                 # parse something here for display
                 print('Receive: {} ({}) - {} : {} cm'.format(CHAR_TO_SENDER[inMessage.sender],
-                                                          inMessage.messageNumber,
-                                                          CHAR_TO_MESSAGE[inMessage.messageType],
-                                                          convertListToSensorData(inMessage.messageContent)))
+                                                             inMessage.messageNumber,
+                                                             CHAR_TO_MESSAGE[inMessage.messageType],
+                                                             convertListToSensorData(inMessage.messageContent)))
             # Movement Completion message from Ghost Rover and Sensors PIC
             elif inMessage.messageType == GHOST_ROVER_COMPLETE:
                 # parse something here for display
@@ -175,6 +175,16 @@ def main():
                                                           inMessage.messageNumber,
                                                           CHAR_TO_MESSAGE[inMessage.messageType],
                                                           inMessage.messageContent))
+            elif inMessage.messageType == GAME_OVER:
+                # parse something here for display
+                print('Receive: {} ({}) - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
+                                                          inMessage.messageNumber,
+                                                          CHAR_TO_MESSAGE[inMessage.messageType],
+                                                          inMessage.messageContent))
+                # Send a game-over message
+                newMessage = convertToMessage(GAME_OVER, 100)
+                s.send(newMessage)
+
     s.close()
 
 if __name__ == '__main__':

@@ -159,6 +159,24 @@ void sendCommandMessage(unsigned char direction, unsigned char xPos, unsigned ch
     sendToTXQueue(newMessage);
 }
 
+void sendGameOverMessage(void)
+{
+    messageStructure newMessage;
+    newMessage.sender = MY_SENDER;
+    newMessage.messageNumber = 0;
+    newMessage.messageType = GAME_OVER;
+    newMessage.messageSize = 4;
+    newMessage.messageContent[0] = 0x00;
+    newMessage.messageContent[1] = 0x00;
+    newMessage.messageContent[2] = 0x00;
+    newMessage.messageContent[3] = 0x64;
+    // Increment and limit the value
+    ++mainappData.counter;
+    mainappData.counter %= 256;
+    // Send
+    sendToTXQueue(newMessage);
+}
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: Application Initialization and State Machine Functions
@@ -212,6 +230,10 @@ void MAINAPP_Tasks ( void )
             else if(tempMsg.messageType == DEBUG) {
                 // Filter out content
                 sendDebugMessage(40);
+            }
+            else if(tempMsg.messageType == GAME_OVER) {
+                // Filter out content
+                sendGameOverMessage();
             }
         }
     }

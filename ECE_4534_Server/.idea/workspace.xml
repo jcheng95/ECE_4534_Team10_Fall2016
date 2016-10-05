@@ -25,7 +25,7 @@
         <entry file="file://$PROJECT_DIR$/echo_server_team10.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="183" column="64" selection-start-line="183" selection-start-column="64" selection-end-line="183" selection-end-column="64" />
+              <caret line="214" column="96" selection-start-line="214" selection-start-column="96" selection-end-line="214" selection-end-column="96" />
               <folding>
                 <element signature="e#112#133#0" expanded="true" />
               </folding>
@@ -36,8 +36,8 @@
       <file leaf-file-name="echo_client_team10.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/echo_client_team10.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6426117">
-              <caret line="166" column="52" selection-start-line="166" selection-start-column="52" selection-end-line="166" selection-end-column="52" />
+            <state vertical-scroll-proportion="0.8109966">
+              <caret line="183" column="42" selection-start-line="183" selection-start-column="42" selection-end-line="183" selection-end-column="42" />
               <folding>
                 <element signature="e#95#108#0" expanded="true" />
               </folding>
@@ -781,13 +781,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Documents/GitHub/ECE_4534_Team10_Fall2016/ECE_4534_Server/clientConfig.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.0824742">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/common.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -799,7 +792,7 @@
     <entry file="file://$PROJECT_DIR$/echo_server_team10.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="183" column="64" selection-start-line="183" selection-start-column="64" selection-end-line="183" selection-end-column="64" />
+          <caret line="214" column="96" selection-start-line="214" selection-start-column="96" selection-end-line="214" selection-end-column="96" />
           <folding>
             <element signature="e#112#133#0" expanded="true" />
           </folding>
@@ -808,8 +801,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/echo_client_team10.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6426117">
-          <caret line="166" column="52" selection-start-line="166" selection-start-column="52" selection-end-line="166" selection-end-column="52" />
+        <state vertical-scroll-proportion="0.8109966">
+          <caret line="183" column="42" selection-start-line="183" selection-start-column="42" selection-end-line="183" selection-end-column="42" />
           <folding>
             <element signature="e#95#108#0" expanded="true" />
           </folding>

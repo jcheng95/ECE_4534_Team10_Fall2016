@@ -203,6 +203,10 @@ void MAINAPP_Tasks ( void )
             }
             else if(tempMsg.messageType == PACMAN_COMMAND) {
                 // Filter out content
+                int a, b;
+                for(a = 0; a < 5000; a++) {
+                    b = a;
+                }
                 sendCompleteMessage();
             }
             else if(tempMsg.messageType == DEBUG) {

@@ -150,7 +150,7 @@ def main():
             # Sensor data from Pac-Man Rover and Sensors PIC
             elif inMessage.messageType == PACMAN_SENSOR:
                 # parse something here for display
-                print('Receive: {} ({}) - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
+                print('Receive: {} ({}) - {} : {} cm'.format(CHAR_TO_SENDER[inMessage.sender],
                                                           inMessage.messageNumber,
                                                           CHAR_TO_MESSAGE[inMessage.messageType],
                                                           convertListToSensorData(inMessage.messageContent)))
@@ -164,7 +164,7 @@ def main():
             # Sensor data from Ghost Rover and Sensors PIC
             elif inMessage.messageType == GHOST_SENSOR:
                 # parse something here for display
-                print('Receive: {} ({}) - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
+                print('Receive: {} ({}) - {} : {} cm'.format(CHAR_TO_SENDER[inMessage.sender],
                                                           inMessage.messageNumber,
                                                           CHAR_TO_MESSAGE[inMessage.messageType],
                                                           convertListToSensorData(inMessage.messageContent)))

@@ -116,6 +116,7 @@ void filterAndSend(messageStructure msg)
             break;
         case GAME_OVER:
             sendToMainAppQueue(msg);
+            break;
         default:
             break;
     }

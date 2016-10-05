@@ -229,9 +229,11 @@ void MAINAPP_Tasks ( void )
                 for(a = 0; a < 5000; a++) {
                     b = a;
                 }
-                sendCompleteMessage();
                 if(test >= 300) {
                     sendGameOverMessage();
+                }
+                else {
+                    sendCompleteMessage();
                 }
             }
             else if(tempMsg.messageType == DEBUG) {

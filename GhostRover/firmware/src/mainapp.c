@@ -110,13 +110,16 @@ void sendDebugMessage(unsigned int val)
     messageStructure newMessage;
     // Deconstruct
     newMessage.sender = MY_SENDER;
-    newMessage.messageNumber = 0;
+    newMessage.messageNumber = mainappData.counter;
     newMessage.messageType = DEBUG; // will need to change for arbitration in message type
     newMessage.messageSize = sizeof(unsigned int);
     newMessage.messageContent[0] = (val & 0xFF000000) >> 24;
     newMessage.messageContent[1] = (val & 0x00FF0000) >> 16;
     newMessage.messageContent[2] = (val & 0x0000FF00) >> 8;
     newMessage.messageContent[3] = (val & 0x000000FF);
+    // Increment and limit the value
+    ++mainappData.counter;
+    mainappData.counter %= 256;
     // Send
     sendToTXQueue(newMessage);
 }
@@ -125,7 +128,7 @@ void sendSensorMessage(char* val)
 {
     messageStructure newMessage;
     newMessage.sender = MY_SENDER;
-    newMessage.messageNumber = 0;
+    newMessage.messageNumber = mainappData.counter;
     newMessage.messageType = GHOST_SENSOR;
     newMessage.messageSize = 4;
     // MSB in index 0
@@ -133,28 +136,35 @@ void sendSensorMessage(char* val)
     newMessage.messageContent[1] = val[1];
     newMessage.messageContent[2] = val[2];
     newMessage.messageContent[3] = val[3];
-    
+    // Increment and limit the value
+    ++mainappData.counter;
+    mainappData.counter %= 256;
+    // Send
     sendToTXQueue(newMessage);
 }
 
-void sendCommandMessage(unsigned char direction, unsigned char xPos, unsigned char yPos)
+void sendCompleteMessage(void)
 {
     messageStructure newMessage;
     newMessage.sender = MY_SENDER;
-    newMessage.messageNumber = 0;
-    newMessage.messageType = GHOST_COMMAND;
+    newMessage.messageNumber = mainappData.counter;
+    newMessage.messageType = GHOST_ROVER_COMPLETE;
     newMessage.messageSize = 4;
-    newMessage.messageContent[0] = direction;
-    newMessage.messageContent[1] = xPos;
-    newMessage.messageContent[2] = yPos;
-    newMessage.messageContent[3] = 0x00;
-    
+    newMessage.messageContent[0] = 0x01;
+    newMessage.messageContent[1] = 0x02;
+    newMessage.messageContent[2] = 0x03
+    newMessage.messageContent[3] = 0x04;
+    // Increment and limit the value
+    ++mainappData.counter;
+    mainappData.counter %= 256;
+    // Send
     sendToTXQueue(newMessage);
 }
 
-void convertToCentimeters(unsigned int val)
+void convertToCentimeters(char* val)
 {
     // Calculate
+    int convertedVal = ((val[0] << 24) | (val[1] << 16) | (val[2] << 8) | val[3]);
 }
 
 // *****************************************************************************
@@ -174,6 +184,7 @@ void convertToCentimeters(unsigned int val)
 void MAINAPP_Initialize ( void )
 {
     mainappData.mainQueue = xQueueCreate(16, sizeof(messageStructure));
+    mainappData.counter = 0;
 }
 
 
@@ -196,13 +207,12 @@ void MAINAPP_Tasks ( void )
         if(xQueueReceive(mainappData.mainQueue, &tempMsg, portMAX_DELAY)) {
             // Filter messages
             if(tempMsg.messageType == INITIAL_ORDER) {
+                // Start up ADC when it becomes pertinent
                 DRV_ADC_Open();
-                // Filter out content
-                //sendDebugMessage(300);
             }
             else if(tempMsg.messageType == GHOST_COMMAND) {
                 // Filter out content
-                sendCommandMessage(FORWARD, 0x01, 0x02);
+                sendCompleteMessage();
             }
             else if(tempMsg.messageType == DEBUG) {
                 // Filter out content

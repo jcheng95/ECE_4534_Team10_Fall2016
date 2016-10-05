@@ -92,6 +92,7 @@ extern "C" {
 typedef struct
 {
     QueueHandle_t mainQueue;
+    unsigned char counter;
 } MAINAPP_DATA;
 
 

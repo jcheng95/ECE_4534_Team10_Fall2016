@@ -102,18 +102,59 @@ BaseType_t sendToMainAppQueueFromISR(messageStructure msg)
 // *****************************************************************************
 // *****************************************************************************
 
-void sendMessage(void)
+// Sending a debug message
+void sendDebugMessage(unsigned int val)
 {
     messageStructure newMessage;
     // Deconstruct
     newMessage.sender = MY_SENDER;
-    newMessage.messageNumber = 0;
-    newMessage.messageType = GHOST_COMMAND; // will need to change for arbitration in message type
+    newMessage.messageNumber = mainappData.counter;
+    newMessage.messageType = DEBUG; // will need to change for arbitration in message type
     newMessage.messageSize = sizeof(unsigned int);
-    newMessage.messageContent[0] = 0x00;
-    newMessage.messageContent[1] = 0x00;
-    newMessage.messageContent[2] = 0x01;
-    newMessage.messageContent[3] = 0x0C;
+    newMessage.messageContent[0] = (val & 0xFF000000) >> 24;
+    newMessage.messageContent[1] = (val & 0x00FF0000) >> 16;
+    newMessage.messageContent[2] = (val & 0x0000FF00) >> 8;
+    newMessage.messageContent[3] = (val & 0x000000FF);
+    // Increment and limit message count
+    ++mainappData.counter;
+    mainappData.counter %= 256;
+    // Send
+    sendToTXQueue(newMessage);
+}
+
+void sendSensorMessage(char* val)
+{
+    messageStructure newMessage;
+    newMessage.sender = MY_SENDER;
+    newMessage.messageNumber = mainappData.counter;
+    newMessage.messageType = GHOST_SENSOR;
+    newMessage.messageSize = 4;
+    // MSB in index 0
+    newMessage.messageContent[0] = val[0];
+    newMessage.messageContent[1] = val[1];
+    newMessage.messageContent[2] = val[2];
+    newMessage.messageContent[3] = val[3];
+    // Increment and limit message count
+    ++mainappData.counter;
+    mainappData.counter %= 256;
+    // Send
+    sendToTXQueue(newMessage);
+}
+
+void sendCommandMessage(unsigned char direction, unsigned char xPos, unsigned char yPos)
+{
+    messageStructure newMessage;
+    newMessage.sender = MY_SENDER;
+    newMessage.messageNumber = mainappData.counter;
+    newMessage.messageType = GHOST_COMMAND;
+    newMessage.messageSize = 4;
+    newMessage.messageContent[0] = direction;
+    newMessage.messageContent[1] = xPos;
+    newMessage.messageContent[2] = yPos;
+    newMessage.messageContent[3] = 0x00;
+    // Increment and limit message count
+    ++mainappData.counter;
+    mainappData.counter %= 256;
     // Send
     sendToTXQueue(newMessage);
 }
@@ -135,6 +176,7 @@ void sendMessage(void)
 void MAINAPP_Initialize ( void )
 {
     mainappData.mainQueue = xQueueCreate(16, sizeof(messageStructure));
+    mainappData.counter = 0;
 }
 
 
@@ -152,26 +194,24 @@ void MAINAPP_Tasks ( void )
 
     PLIB_USART_Enable(USART_ID_1);
 
-    sendMessage();
-
     while(1) {
         if(xQueueReceive(mainappData.mainQueue, &tempMsg, portMAX_DELAY)) {
             // Filter messages
             if(tempMsg.messageType == INITIAL_ORDER) {
                 // Filter out content
-                sendMessage();
+                sendCommandMessage(LEFT, 0x01, 0x02);
             }
             else if(tempMsg.messageType == GHOST_SENSOR) {
                 // Filter out content
-                sendMessage();
+                sendDebugMessage(30);
             }
             else if(tempMsg.messageType == GHOST_ROVER_COMPLETE) {
                 // Filter out content
-                sendMessage();
+                sendCommandMessage(RIGHT, 0x04, 0x4C);
             }
             else if(tempMsg.messageType == DEBUG) {
                 // Filter out content
-                sendMessage();
+                sendDebugMessage(40);
             }
         }
     }

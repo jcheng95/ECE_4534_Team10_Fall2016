@@ -102,18 +102,59 @@ BaseType_t sendToMainAppQueueFromISR(messageStructure msg)
 // *****************************************************************************
 // *****************************************************************************
 
-void sendMessage(void)
+// Sending a debug message
+void sendDebugMessage(unsigned int val)
 {
     messageStructure newMessage;
     // Deconstruct
     newMessage.sender = MY_SENDER;
-    newMessage.messageNumber = 0;
-    newMessage.messageType = PACMAN_ROVER_COMPLETE; // will need to change for arbitration in message type
+    newMessage.messageNumber = mainappData.counter;
+    newMessage.messageType = DEBUG; // will need to change for arbitration in message type
     newMessage.messageSize = sizeof(unsigned int);
-    newMessage.messageContent[0] = 0x00;
-    newMessage.messageContent[1] = 0x00;
-    newMessage.messageContent[2] = 0x01;
-    newMessage.messageContent[3] = 0x0C;
+    newMessage.messageContent[0] = (val & 0xFF000000) >> 24;
+    newMessage.messageContent[1] = (val & 0x00FF0000) >> 16;
+    newMessage.messageContent[2] = (val & 0x0000FF00) >> 8;
+    newMessage.messageContent[3] = (val & 0x000000FF);
+    // Increment and limit the value
+    ++mainappData.counter;
+    mainappData.counter %= 256;
+    // Send
+    sendToTXQueue(newMessage);
+}
+
+void sendSensorMessage(char* val)
+{
+    messageStructure newMessage;
+    newMessage.sender = MY_SENDER;
+    newMessage.messageNumber = mainappData.counter;
+    newMessage.messageType = PACMAN_SENSOR;
+    newMessage.messageSize = 4;
+    // MSB in index 0
+    newMessage.messageContent[0] = val[0];
+    newMessage.messageContent[1] = val[1];
+    newMessage.messageContent[2] = val[2];
+    newMessage.messageContent[3] = val[3];
+    // Increment and limit the value
+    ++mainappData.counter;
+    mainappData.counter %= 256;
+    // Send
+    sendToTXQueue(newMessage);
+}
+
+void sendCompleteMessage(void)
+{
+    messageStructure newMessage;
+    newMessage.sender = MY_SENDER;
+    newMessage.messageNumber = mainappData.counter;
+    newMessage.messageType = PACMAN_ROVER_COMPLETE;
+    newMessage.messageSize = 4;
+    newMessage.messageContent[0] = 0x01;
+    newMessage.messageContent[1] = 0x02;
+    newMessage.messageContent[2] = 0x03
+    newMessage.messageContent[3] = 0x04;
+    // Increment and limit the value
+    ++mainappData.counter;
+    mainappData.counter %= 256;
     // Send
     sendToTXQueue(newMessage);
 }
@@ -135,6 +176,7 @@ void sendMessage(void)
 void MAINAPP_Initialize ( void )
 {
     mainappData.mainQueue = xQueueCreate(16, sizeof(messageStructure));
+    mainappData.counter = 0;
 }
 
 
@@ -152,22 +194,20 @@ void MAINAPP_Tasks ( void )
 
     PLIB_USART_Enable(USART_ID_1);
 
-    sendMessage();
-
     while(1) {
         if(xQueueReceive(mainappData.mainQueue, &tempMsg, portMAX_DELAY)) {
             // Filter messages
             if(tempMsg.messageType == INITIAL_ORDER) {
-                // Filter out content
-                sendMessage();
+                // Start up ADC when it becomes pertinent
+                //DRV_ADC_Open();
             }
             else if(tempMsg.messageType == PACMAN_COMMAND) {
                 // Filter out content
-                sendMessage();
+                sendCompleteMessage();
             }
             else if(tempMsg.messageType == DEBUG) {
                 // Filter out content
-                sendMessage();
+                sendDebugMessage(30);
             }
         }
     }

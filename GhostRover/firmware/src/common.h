@@ -58,6 +58,7 @@ extern "C" {
 #define GHOST_SENSOR            0x06
 #define GHOST_ROVER_COMPLETE    0x07
 #define INITIAL_ORDER           0x08
+#define GAME_OVER               0x0A
     
 /// Directions ///
 #define FORWARD     0x01

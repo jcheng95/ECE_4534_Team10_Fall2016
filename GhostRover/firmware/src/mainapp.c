@@ -143,11 +143,29 @@ void sendSensorMessage(char* val)
     sendToTXQueue(newMessage);
 }
 
-void sendCompleteMessage(void)
+void sendCommandMessage(unsigned char direction, unsigned char xPos, unsigned char yPos)
 {
     messageStructure newMessage;
     newMessage.sender = MY_SENDER;
     newMessage.messageNumber = mainappData.counter;
+    newMessage.messageType = GHOST_COMMAND;
+    newMessage.messageSize = 4;
+    newMessage.messageContent[0] = direction;
+    newMessage.messageContent[1] = xPos;
+    newMessage.messageContent[2] = yPos;
+    newMessage.messageContent[3] = 0x00;
+    // Increment and limit the value
+    ++mainappData.counter;
+    mainappData.counter %= 256;
+    // Send
+    sendToTXQueue(newMessage);
+}
+
+void sendCompleteMessage(void)
+{
+    messageStructure newMessage;
+    newMessage.sender = MY_SENDER;
+    newMessage.messageNumber = 0;
     newMessage.messageType = GHOST_ROVER_COMPLETE;
     newMessage.messageSize = 4;
     newMessage.messageContent[0] = 0x01;
@@ -159,13 +177,6 @@ void sendCompleteMessage(void)
     mainappData.counter %= 256;
     // Send
     sendToTXQueue(newMessage);
-}
-
-unsigned int convertToCentimeters(char* val)
-{
-    // Calculate
-    unsigned int convertedVal = ((val[0] << 24) | (val[1] << 16) | (val[2] << 8) | val[3]);
-    return convertedVal;
 }
 
 // *****************************************************************************

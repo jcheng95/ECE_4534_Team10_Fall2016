@@ -102,6 +102,16 @@ BaseType_t sendToADCAppQueueFromISR(unsigned int msg)
 // *****************************************************************************
 // *****************************************************************************
 
+// This function converts the results of the ADC read into human-readable centimeters
+unsigned int convertToCentimeters(unsigned int val)
+{
+   unsigned int convertedResult;
+   
+   convertedResult = (unsigned int)exp(((double)val - 1333.2) / -285.9);
+   
+   return convertedResult;
+}
+
 // Sends sensor data, with the data type int, to mainapp
 void sendSensorData(unsigned int val)
 {

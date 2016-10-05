@@ -122,8 +122,8 @@ void IntHandlerDrvAdc(void)
 
 void IntHandlerDrvUsartInstance0(void)
 {
-    unsigned char sendByte;
-    unsigned char recvByte;
+    char sendByte;
+    char recvByte;
     
     // Interrupt driven by the receive
     if(PLIB_INT_SourceFlagGet(INT_ID_0, INT_SOURCE_USART_1_RECEIVE)) {

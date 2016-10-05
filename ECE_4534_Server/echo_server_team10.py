@@ -31,12 +31,12 @@ def convertFromMessage(message):
     global RECEIVE_COUNT
 
     # Increment the send counter
-    RECEIVE_COUNT = RECEIVE_COUNT % 256
     RECEIVE_COUNT += 1
+    RECEIVE_COUNT = RECEIVE_COUNT % 256
     # The sender / client of the message
     client = message[1]
     # The message number for the number of messages this client has received
-    RECEIVE_COUNT = message[2]
+    messageNumber = message[2]
     # Message type
     messageType = message[3]
     # Message size <- only used for double-checking a message wasn't lost
@@ -50,7 +50,7 @@ def convertFromMessage(message):
             pass
 
     # Creates an internal message for easy data extraction
-    convertedMessage = messageStructure(client, messageType, msg)
+    convertedMessage = messageStructure(client, messageNumber, messageType, msg)
     return convertedMessage
 
 # Converts to a message that can be sent wirelessly
@@ -155,51 +155,59 @@ def listening():
                         # Debug message
                         if inMessage.messageType == DEBUG:
                             # parse something here for display
-                            print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
-                                                                 CHAR_TO_MESSAGE[inMessage.messageType],
-                                                                 inMessage.messageContent))
+                            print('Receive: {} ({}) - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
+                                                                      inMessage.messageNumber,
+                                                                      CHAR_TO_MESSAGE[inMessage.messageType],
+                                                                      inMessage.messageContent))
                         # Command by Pac-Man Control PIC
                         elif inMessage.messageType == PACMAN_COMMAND:
                             # parse something here for display
-                            print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
-                                                                 CHAR_TO_MESSAGE[inMessage.messageType],
-                                                                 inMessage.messageContent))
+                            print('Receive: {} ({}) - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
+                                                                      inMessage.messageNumber,
+                                                                      CHAR_TO_MESSAGE[inMessage.messageType],
+                                                                      inMessage.messageContent))
                         # Command by Ghost Control PIC
                         elif inMessage.messageType == GHOST_COMMAND:
                             # parse something here for display
-                            print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
-                                                                 CHAR_TO_MESSAGE[inMessage.messageType],
-                                                                 convertListToSensorData(inMessage.messageContent)))
+                            print('Receive: {} ({}) - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
+                                                                      inMessage.messageNumber,
+                                                                      CHAR_TO_MESSAGE[inMessage.messageType],
+                                                                      convertListToSensorData(inMessage.messageContent)))
                         # Sensor data from Pac-Man Rover and Sensors PIC
                         elif inMessage.messageType == PACMAN_SENSOR:
                             # parse something here for display
-                            print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
-                                                                 CHAR_TO_MESSAGE[inMessage.messageType],
-                                                                 inMessage.messageContent))
+                            print('Receive: {} ({}) - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
+                                                                      inMessage.messageNumber,
+                                                                      CHAR_TO_MESSAGE[inMessage.messageType],
+                                                                      inMessage.messageContent))
                         # Movement Completion message from Pac-Man Rover and Sensors PIC
                         elif inMessage.messageType == PACMAN_ROVER_COMPLETE:
                             # parse something here for display
-                            print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
-                                                                 CHAR_TO_MESSAGE[inMessage.messageType],
-                                                                 convertListToSensorData(inMessage.messageContent)))
+                            print('Receive: {} ({}) - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
+                                                                      inMessage.messageNumber,
+                                                                      CHAR_TO_MESSAGE[inMessage.messageType],
+                                                                      convertListToSensorData(inMessage.messageContent)))
                         # Sensor data from Ghost Rover and Sensors PIC
                         elif inMessage.messageType == GHOST_SENSOR:
                             # parse something here for display
-                            print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
-                                                                 CHAR_TO_MESSAGE[inMessage.messageType],
-                                                                 inMessage.messageContent))
+                            print('Receive: {} ({}) - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
+                                                                      inMessage.messageNumber,
+                                                                      CHAR_TO_MESSAGE[inMessage.messageType],
+                                                                      inMessage.messageContent))
                         # Movement Completion message from Ghost Rover and Sensors PIC
                         elif inMessage.messageType == GHOST_ROVER_COMPLETE:
                             # parse something here for display
-                            print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
-                                                                 CHAR_TO_MESSAGE[inMessage.messageType],
-                                                                 inMessage.messageContent))
+                            print('Receive: {} ({}) - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
+                                                                      inMessage.messageNumber,
+                                                                      CHAR_TO_MESSAGE[inMessage.messageType],
+                                                                      inMessage.messageContent))
                         # Token order message from computer
                         elif inMessage.messageType == INITIAL_ORDER:
                             # parse something here for display
-                            print('Receive: {} - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
-                                                                 CHAR_TO_MESSAGE[inMessage.messageType],
-                                                                 inMessage.messageContent))
+                            print('Receive: {} ({}) - {} : {}'.format(CHAR_TO_SENDER[inMessage.sender],
+                                                                      inMessage.messageNumber,
+                                                                      CHAR_TO_MESSAGE[inMessage.messageType],
+                                                                      inMessage.messageContent))
 
                         #Do not send the message to master socket and the client who has sent us the message
                         for sockets in clientList:

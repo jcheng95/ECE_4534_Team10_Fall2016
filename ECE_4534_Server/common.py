@@ -60,7 +60,8 @@ CHAR_TO_MESSAGE[INITIAL_ORDER]                  = "Order That Tokens Need To Be 
 CHAR_TO_MESSAGE[GAME_OVER]                      = "Game-over Message"
 
 class messageStructure:
-    def __init__(self, sender, messageType, messageContent):
+    def __init__(self, sender, messageNumber, messageType, messageContent):
         self.sender = sender
+        self.messageNumber = messageNumber
         self.messageType = messageType
         self.messageContent = messageContent

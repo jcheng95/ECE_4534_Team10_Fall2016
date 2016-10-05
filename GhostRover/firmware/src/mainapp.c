@@ -152,7 +152,7 @@ void sendCompleteMessage(void)
     newMessage.messageSize = 4;
     newMessage.messageContent[0] = 0x01;
     newMessage.messageContent[1] = 0x02;
-    newMessage.messageContent[2] = 0x03
+    newMessage.messageContent[2] = 0x03;
     newMessage.messageContent[3] = 0x04;
     // Increment and limit the value
     ++mainappData.counter;

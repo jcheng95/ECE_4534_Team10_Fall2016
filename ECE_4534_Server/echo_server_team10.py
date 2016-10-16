@@ -5,15 +5,17 @@
 Echo server used by the Raspberry Pi
 """
 
+import sys
 import socket, select
 from queue import Queue
 from threading import Thread
+import atexit
 from common import *
 
 # Array of clients
 clientList = []
 # Queue of socket messages to be sent out
-messages = Queue()
+#messages = Queue()
 # String for message
 data = b''
 
@@ -24,6 +26,16 @@ RECEIVE_COUNT = 0
 # IP Data
 HOST_IP = ''
 PORT_NUMBER = 2000
+
+# Close all sockets still listening to the host
+def closeLooseConnections():
+    global clientList
+    for sockets in clientList:
+        sockets.close()
+        clientList.remove(sockets)
+
+# Register closeLooseConnections() as a function to be called upon exiting
+atexit.register(closeLooseConnections)
 
 # Converts an array of bytes to a messageStructure object that can be used to send out a message
 # Really this is just a fancy way of extracting data I want to keep a hold of in a class
@@ -82,7 +94,7 @@ def convertSensorDataToCentimeters(value):
     return sensorData
 
 # Parse socket packet for multiple messages
-def separateMessages(packet):
+"""def separateMessages(packet):
     sender = 0
     count = 0
     type = 0
@@ -103,7 +115,7 @@ def separateMessages(packet):
                 msg[y] = packet[x]
                 x += 1
             if packet[x] == END_BYTE:
-                messages.put(messageStructure(sender, type, msg))
+                messages.put(messageStructure(sender, type, msg))"""
 
 # Converts the message contents of a sensor data message into readable content
 def convertListToSensorData(message):
@@ -139,8 +151,15 @@ def listening():
                 clientList.append(client)
                 print('New client at {}'.format(address))
             else:
-                # Checking for a new message
-                data = sock.recv(size)
+                # Tests for a receive while also handling a suddenly-dead client
+                try:
+                    # Checking for a new message
+                    data = sock.recv(size)
+                except ConnectionResetError:
+                    # Remove the client and return to the top of the loop
+                    sock.close()
+                    clientList.remove(sock)
+                    continue
 
                 # Message exists
                 if data:
@@ -223,9 +242,6 @@ def listening():
                                     # broken socket connection may be, chat client pressed ctrl+c for example
                                     sockets.close()
                                     clientList.remove(sockets)
-    for sockets in clientList:
-        sockets.close()
-        clientList.remove(sockets)
 
 def main():
     global data
@@ -240,4 +256,10 @@ if __name__ == '__main__':
     listeningThread.start()
 
     # Starting the main function
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print('Suddenly exiting')
+        sys.exit(0) # Raising the SystemExit exception without classifying the exit as something caused by an error
+    except:
+        raise

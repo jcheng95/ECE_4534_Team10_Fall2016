@@ -157,6 +157,7 @@ def listening():
                     data = sock.recv(size)
                 except ConnectionResetError:
                     # Remove the client and return to the top of the loop
+                    print('A client has disconnected')
                     sock.close()
                     clientList.remove(sock)
                     continue

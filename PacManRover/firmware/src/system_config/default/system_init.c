@@ -69,7 +69,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 /*** DEVCFG1 ***/
 
 #pragma config FNOSC =      FRCPLL
-#pragma config FSOSCEN =    ON
+#pragma config FSOSCEN =    OFF
 #pragma config IESO =       ON
 #pragma config POSCMOD =    OFF
 #pragma config OSCIOFNC =   OFF
@@ -100,6 +100,8 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // Section: Driver Initialization Data
 // *****************************************************************************
 // *****************************************************************************
+// <editor-fold defaultstate="collapsed" desc="DRV_Timer Initialization Data">
+// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="DRV_USART Initialization Data">
 // </editor-fold>
 
@@ -169,10 +171,12 @@ void SYS_Initialize ( void* data )
     SYS_PORTS_Initialize();
 
     /* Initialize Drivers */
-
-    /* Initialize ADC */
-    DRV_ADC_Initialize();
-
+    /* Initialize the OC Driver */
+    DRV_OC0_Initialize();
+    DRV_OC1_Initialize();
+    /*Initialize TMR0 */
+    DRV_TMR0_Initialize();
+ 
     sysObj.drvUsart0 = DRV_USART_Initialize(DRV_USART_INDEX_0, (SYS_MODULE_INIT *)NULL);
     SYS_INT_VectorPrioritySet(INT_VECTOR_UART1, INT_PRIORITY_LEVEL1);
     SYS_INT_VectorSubprioritySet(INT_VECTOR_UART1, INT_SUBPRIORITY_LEVEL0);
@@ -181,6 +185,21 @@ void SYS_Initialize ( void* data )
 
     /*** Interrupt Service Initialization Code ***/
     SYS_INT_Initialize();
+  
+    /*Setup the INT_SOURCE_EXTERNAL_1 and Enable it*/
+    SYS_INT_VectorPrioritySet(INT_VECTOR_INT1, INT_PRIORITY_LEVEL3);
+    SYS_INT_VectorSubprioritySet(INT_VECTOR_INT1, INT_SUBPRIORITY_LEVEL0);
+    SYS_INT_ExternalInterruptTriggerSet(INT_EXTERNAL_INT_SOURCE1,INT_EDGE_TRIGGER_RISING);
+    SYS_INT_SourceEnable(INT_SOURCE_EXTERNAL_1);
+
+    /*Setup the INT_SOURCE_EXTERNAL_2 and Enable it*/
+    SYS_INT_VectorPrioritySet(INT_VECTOR_INT2, INT_PRIORITY_LEVEL3);
+    SYS_INT_VectorSubprioritySet(INT_VECTOR_INT2, INT_SUBPRIORITY_LEVEL0);
+    SYS_INT_ExternalInterruptTriggerSet(INT_EXTERNAL_INT_SOURCE2,INT_EDGE_TRIGGER_RISING);
+    SYS_INT_SourceEnable(INT_SOURCE_EXTERNAL_2);
+
+
+
   
     /* Initialize Middleware */
     initializeBufferQueue();

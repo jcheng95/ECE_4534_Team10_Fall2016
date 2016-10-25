@@ -56,6 +56,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "mainapp.h"
 
 #include "mainapp_public.h"
+#include "motor_control_public.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -163,7 +164,7 @@ void sendGameOverMessage(void)
 {
     messageStructure newMessage;
     newMessage.sender = MY_SENDER;
-    newMessage.messageNumber = 0;
+    newMessage.messageNumber = mainappData.counter;
     newMessage.messageType = GAME_OVER;
     newMessage.messageSize = 4;
     newMessage.messageContent[0] = 0x00;
@@ -175,6 +176,24 @@ void sendGameOverMessage(void)
     mainappData.counter %= 256;
     // Send
     sendToTXQueue(newMessage);
+}
+
+void convertAndSendSensorData(messageStructure oldMessage)
+{
+    messageStructure sendingMessage;
+    sendingMessage.sender = MY_SENDER;
+    sendingMessage.messageNumber = mainappData.counter;
+    sendingMessage.messageType = PACMAN_SENSOR;
+    sendingMessage.messageSize = 4;
+    sendingMessage.messageContent[0] = oldMessage.messageContent[0];
+    sendingMessage.messageContent[1] = oldMessage.messageContent[1];
+    sendingMessage.messageContent[2] = oldMessage.messageContent[2];
+    sendingMessage.messageContent[3] = oldMessage.messageContent[3];
+    // Increment and limit the value
+    ++mainappData.counter;
+    mainappData.counter %= 256;
+    // Send
+    sendToTXQueue(sendingMessage);
 }
 
 // *****************************************************************************
@@ -221,28 +240,26 @@ void MAINAPP_Tasks ( void )
             if(tempMsg.messageType == INITIAL_ORDER) {
                 // Start up ADC when it becomes pertinent
                 //DRV_ADC_Open();
+                startSensing();
             }
             else if(tempMsg.messageType == PACMAN_COMMAND) {
-                ++test;
-                // Filter out content
-                int a, b;
-                for(a = 0; a < 5000; a++) {
-                    b = a;
-                }
-                if(test >= 300) {
-                    sendGameOverMessage();
-                }
-                else {
-                    sendCompleteMessage();
-                }
+                sendToMotorControlQueue(tempMsg);
+            }
+            else if(tempMsg.messageType == PACMAN_ROVER_COMPLETE) {
+                // send from internally (motor control) outwards
+                sendCompleteMessage();
             }
             else if(tempMsg.messageType == DEBUG) {
                 // Filter out content
-                sendDebugMessage(30);
+                //sendDebugMessage(30);
+                sendToTXQueue(tempMsg);
             }
             else if(tempMsg.messageType == GAME_OVER) {
                 // Filter out content
                 sendGameOverMessage();
+            }
+            else if(tempMsg.messageType == PACMAN_SENSOR) {
+                convertAndSendSensorData(tempMsg);
             }
         }
     }

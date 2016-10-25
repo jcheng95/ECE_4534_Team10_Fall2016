@@ -34,6 +34,11 @@ extern "C" {
 
 BaseType_t sendToMotorControlQueue(messageStructure msg);
 BaseType_t sendToMotorControlQueueFromISR(messageStructure msg);
+void incrementLeftEncoder();
+void incrementRightEncoder();
+void pidAdjustment();
+void updateSensorData();
+void startSensing();
 
     /* Provide C++ Compatibility */
 #ifdef __cplusplus

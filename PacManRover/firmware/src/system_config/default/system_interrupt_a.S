@@ -47,38 +47,108 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 #include "ISR_Support.h"
 
-/* ADC Interrupt */
-   .extern  IntHandlerDrvAdc
 
-   .section	.vector_27,code, keep
-   .equ     __vector_dispatch_27, IntVectorDrvAdc
-   .global  __vector_dispatch_27
+/* External Interrupt Instance 0 Interrupt */
+   .extern  IntHandlerExternalInterruptInstance0
+
+   .section	.vector_7,code, keep
+   .equ     __vector_dispatch_7, IntVectorExternalInterruptInstance0
+   .global  __vector_dispatch_7
    .set     nomicromips
    .set     noreorder
    .set     nomips16
    .set     noat
-   .ent  IntVectorDrvAdc
+   .ent  IntVectorExternalInterruptInstance0
 
-IntVectorDrvAdc:
-    la    $26,  _IntHandlerDrvAdc         
+IntVectorExternalInterruptInstance0:
+    la    $26,  _IntHandlerExternalInterruptInstance0         
     jr    $26
     nop
-	.end	IntVectorDrvAdc
+	.end	IntVectorExternalInterruptInstance0
 
-   .section	.DrvAdc_vector_text, code, keep
+   .section	.ExternalInterruptInstance0_vector_text, code, keep
    .set     nomicromips
    .set     noreorder
    .set     nomips16
    .set     noat
-   .ent  _IntHandlerDrvAdc
+   .ent  _IntHandlerExternalInterruptInstance0
 
-_IntHandlerDrvAdc:
+_IntHandlerExternalInterruptInstance0:
     portSAVE_CONTEXT
-    la    s6,  IntHandlerDrvAdc
+    la    s6,  IntHandlerExternalInterruptInstance0
     jalr  s6
     nop
     portRESTORE_CONTEXT
-    .end	_IntHandlerDrvAdc
+    .end	_IntHandlerExternalInterruptInstance0
+
+
+/* External Interrupt Instance 1 Interrupt */
+   .extern  IntHandlerExternalInterruptInstance1
+
+   .section	.vector_11,code, keep
+   .equ     __vector_dispatch_11, IntVectorExternalInterruptInstance1
+   .global  __vector_dispatch_11
+   .set     nomicromips
+   .set     noreorder
+   .set     nomips16
+   .set     noat
+   .ent  IntVectorExternalInterruptInstance1
+
+IntVectorExternalInterruptInstance1:
+    la    $26,  _IntHandlerExternalInterruptInstance1         
+    jr    $26
+    nop
+	.end	IntVectorExternalInterruptInstance1
+
+   .section	.ExternalInterruptInstance1_vector_text, code, keep
+   .set     nomicromips
+   .set     noreorder
+   .set     nomips16
+   .set     noat
+   .ent  _IntHandlerExternalInterruptInstance1
+
+_IntHandlerExternalInterruptInstance1:
+    portSAVE_CONTEXT
+    la    s6,  IntHandlerExternalInterruptInstance1
+    jalr  s6
+    nop
+    portRESTORE_CONTEXT
+    .end	_IntHandlerExternalInterruptInstance1
+
+
+
+/* TMR Instance 0 Interrupt */
+   .extern  IntHandlerDrvTmrInstance0
+
+   .section	.vector_8,code, keep
+   .equ     __vector_dispatch_8, IntVectorDrvTmrInstance0
+   .global  __vector_dispatch_8
+   .set     nomicromips
+   .set     noreorder
+   .set     nomips16
+   .set     noat
+   .ent  IntVectorDrvTmrInstance0
+
+IntVectorDrvTmrInstance0:
+    la    $26,  _IntHandlerDrvTmrInstance0         
+    jr    $26
+    nop
+	.end	IntVectorDrvTmrInstance0
+
+   .section	.DrvTmrInstance0_vector_text, code, keep
+   .set     nomicromips
+   .set     noreorder
+   .set     nomips16
+   .set     noat
+   .ent  _IntHandlerDrvTmrInstance0
+
+_IntHandlerDrvTmrInstance0:
+    portSAVE_CONTEXT
+    la    s6,  IntHandlerDrvTmrInstance0
+    jalr  s6
+    nop
+    portRESTORE_CONTEXT
+    .end	_IntHandlerDrvTmrInstance0
 
 
 

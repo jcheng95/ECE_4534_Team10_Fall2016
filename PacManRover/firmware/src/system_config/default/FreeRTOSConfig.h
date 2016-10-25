@@ -90,7 +90,7 @@
 #define configMAX_PRIORITIES                    ( 5UL )
 #define configMINIMAL_STACK_SIZE                ( 128 )
 #define configISR_STACK_SIZE                    ( 400 )
-#define configTOTAL_HEAP_SIZE                   ( ( size_t ) 61440 )
+#define configTOTAL_HEAP_SIZE                   ( ( size_t ) 81920 )
 #define configMAX_TASK_NAME_LEN                 ( 16 )
 #define configUSE_16_BIT_TICKS                  0
 #define configIDLE_SHOULD_YIELD                 1
@@ -121,10 +121,10 @@
 #define configMAX_CO_ROUTINE_PRIORITIES         2
 
 /* Software timer related definitions. */
-#define configUSE_TIMERS                        0
-#define configTIMER_TASK_PRIORITY               
-#define configTIMER_QUEUE_LENGTH                
-#define configTIMER_TASK_STACK_DEPTH            
+#define configUSE_TIMERS                        1
+#define configTIMER_TASK_PRIORITY               3
+#define configTIMER_QUEUE_LENGTH                10
+#define configTIMER_TASK_STACK_DEPTH            256
 
 /* Misc */
 #define configUSE_APPLICATION_TASK_TAG          0

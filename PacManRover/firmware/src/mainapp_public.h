@@ -34,6 +34,7 @@ extern "C" {
 
 BaseType_t sendToMainAppQueue(messageStructure msg);
 BaseType_t sendToMainAppQueueFromISR(messageStructure msg);
+void checkForStop(BaseType_t leftMotor, BaseType_t rightMotor);
 
     /* Provide C++ Compatibility */
 #ifdef __cplusplus

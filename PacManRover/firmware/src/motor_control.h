@@ -59,9 +59,34 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "system_config.h"
 #include "system_definitions.h"
 
+#include <timers.h>
 #include <queue.h>
 #include "common.h"
 #include "mainapp_public.h"
+
+/*
+Motor Pins:
+    Right Motor (J3 - S(A/B)1):
+    3  - OC1/PWM
+    78 - Direction
+    37 - Encoder1 (Max32 = TMR3/Pin 22) (SB2-In) <- This is the ideal encoder value?
+    7  - Encoder2 INT2 (SA2-In)                  <- This is the real encoder value?
+ 
+    Left Motor (J6 - S(A/B)2):
+    5  - OC2/PWM
+    4  - Direction
+    A6 - Encoder1 (Max32 = TMR4/Pin 23) (SB1-In) <- This is the ideal encoder value?
+    2  - Encoder2 INT1 (SA1-In)                  <- This is the real encoder value?
+ */
+
+/*
+ Motor gear ratio - 298 : 1
+ Exact gear ratio - 297.92 : 1  ==  (25 * 34 * 37 * 35 * 38) / (12 * 9 * 10 * 13 * 10)
+ 
+ There are 12 encoder ticks for every revolution of the smaller gear. So one full rotation
+ of the larger gear would result in (12 * 297.92) = 3575.04 or, by applying the approximation,
+ (12 * 298) = 3576
+ */
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus  // Provide C++ Compatibility
@@ -90,9 +115,61 @@ extern "C" {
     Application strings and buffers are be defined outside this structure.
  */
 
+typedef enum {
+    movingForward = 0x01,
+    movingBackward = 0x02,
+    movingLeft = 0x03,
+    movingRight = 0x04,
+    stopMoving = 0x05
+} CURRENT_DIRECTION;   
+
+typedef enum {
+    enable_LED = 0x00,
+    drive_IO_outputHigh = 0x01,
+    drive_IO_input = 0x02,
+    measure_disable_LED = 0x03
+} TIMER_FSM;
+
+// Struct to represent a motor with particular values
+typedef struct {
+    int16_t pwmWidth;
+    uint16_t encoderValue;
+    uint16_t previousEncoderValue;
+    uint16_t idealEncoderValue;
+    uint16_t integral;
+    uint16_t previousError;
+} Motor;
+    
 typedef struct
 {
+    // Queue for commands for movement
     QueueHandle_t motorControlQueue;
+    TimerHandle_t motorAdjustmentTimer;
+    
+    // Turn counter and stop values
+    unsigned int turnCounter;
+    unsigned int turnStopValue;
+    
+    /*
+       Data type used to contain the booleans of each sensor 
+       Each sensor represents a bit in the data type where
+       the MSB is the highest number sensor in the list
+    */
+    unsigned char sensorValues;
+    
+    // Motor values used to assign to the left and right motors for easy manipulation of the speed and direction of the rover
+    Motor leftMotorMaxValues;
+    Motor rightMotorMaxValues;
+    Motor stopMotorValues;
+    
+    // Actual motors
+    Motor *leftMotor;
+    Motor *rightMotor;
+    
+    // State machine for the current direction for controlling the turns
+    CURRENT_DIRECTION states;
+    // State machine for the timer for sequence
+    TIMER_FSM timer_states;
 } MOTOR_CONTROL_DATA;
 
 

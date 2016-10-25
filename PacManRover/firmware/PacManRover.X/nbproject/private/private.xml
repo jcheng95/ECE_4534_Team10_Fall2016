@@ -2,6 +2,17 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/ECE_4534/Fall_2016/PacManRover/firmware/src/sensor_timer.c</file>
+            <file>file:/C:/ECE_4534/Fall_2016/PacManRover/firmware/src/mainapp.c</file>
+            <file>file:/C:/ECE_4534/Fall_2016/PacManRover/firmware/src/pid_timer.h</file>
+            <file>file:/C:/ECE_4534/Fall_2016/PacManRover/firmware/src/system_config/default/framework/system/ports/src/sys_ports_static.c</file>
+            <file>file:/C:/ECE_4534/Fall_2016/PacManRover/firmware/src/uart_rx.c</file>
+            <file>file:/C:/ECE_4534/Fall_2016/PacManRover/firmware/src/system_config/default/system_interrupt.c</file>
+            <file>file:/C:/ECE_4534/Fall_2016/PacManRover/firmware/src/motor_control.c</file>
+            <file>file:/C:/ECE_4534/Fall_2016/PacManRover/firmware/src/pid_timer.c</file>
+            <file>file:/C:/ECE_4534/Fall_2016/PacManRover/firmware/src/motor_control.h</file>
+            <file>file:/C:/ECE_4534/Fall_2016/PacManRover/firmware/src/sensor_timer.h</file>
+        </group>
     </open-files>
 </project-private>

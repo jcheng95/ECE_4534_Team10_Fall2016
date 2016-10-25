@@ -104,7 +104,7 @@ void SYS_Tasks ( void )
     /* Create OS Thread for MOTOR_CONTROL Tasks. */
     xTaskCreate((TaskFunction_t) _MOTOR_CONTROL_Tasks,
                 "MOTOR_CONTROL Tasks",
-                4096, NULL, 1, NULL);
+                6144, NULL, 1, NULL);
 
     /* Create OS Thread for UART_TX Tasks. */
     xTaskCreate((TaskFunction_t) _UART_TX_Tasks,

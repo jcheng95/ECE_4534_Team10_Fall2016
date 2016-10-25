@@ -70,6 +70,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include <queue.h>
 #include "common.h"
 #include "tx_buffer_public.h"
+#include "motor_control_public.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -95,10 +96,26 @@ BaseType_t sendToTXBufferQueueFromISR(char msg)
     return xQueueSendFromISR(bufferQueue, &msg, 0);
 }
 
-void IntHandlerDrvAdc(void)
+void IntHandlerExternalInterruptInstance0(void)
 {
-    /* Clear ADC Interrupt Flag */
-    PLIB_INT_SourceFlagClear(INT_ID_0, INT_SOURCE_ADC_1);
+    // Triggered by pin 2
+    incrementRightEncoder();
+    checkForStop(pdFALSE, pdTRUE);
+    PLIB_INT_SourceFlagClear(INT_ID_0, INT_SOURCE_EXTERNAL_1);
+}
+void IntHandlerExternalInterruptInstance1(void)
+{
+    // Triggered by pin 7
+    incrementLeftEncoder();
+    checkForStop(pdTRUE, pdFALSE);
+    PLIB_INT_SourceFlagClear(INT_ID_0, INT_SOURCE_EXTERNAL_2);
+}
+
+void IntHandlerDrvTmrInstance0(void)
+{
+    // Clears the timer register for clean encoder readings
+    PLIB_TMR_Counter16BitClear(TMR_ID_2);
+    PLIB_INT_SourceFlagClear(INT_ID_0,INT_SOURCE_TIMER_2);
 }
 
 void IntHandlerDrvUsartInstance0(void)

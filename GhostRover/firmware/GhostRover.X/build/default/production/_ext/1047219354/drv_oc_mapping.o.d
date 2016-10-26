@@ -1,11 +1,10 @@
-build/default/production/_ext/1688732426/system_exceptions.o:  \
- ../src/system_config/default/system_exceptions.c  \
+build/default/production/_ext/1047219354/drv_oc_mapping.o:  \
+ ../src/system_config/default/framework/driver/oc/src/drv_oc_mapping.c  \
  ../src/system_config/default/system_config.h  \
  ../src/system_config/default/system_definitions.h  \
  ../../../../../microchip/harmony/v1_08_01/framework/system/common/sys_common.h  \
  ../../../../../microchip/harmony/v1_08_01/framework/system/common/sys_module.h  \
  ../../../../../microchip/harmony/v1_08_01/framework/driver/oc/drv_oc.h  \
- ../src/system_config/default/system_config.h  \
  ../../../../../microchip/harmony/v1_08_01/framework/driver/driver_common.h  \
  ../src/system_config/default/framework/driver/oc/drv_oc_static.h  \
  ../../../../../microchip/harmony/v1_08_01/framework/system/clk/sys_clk.h  \
@@ -292,10 +291,9 @@ build/default/production/_ext/1688732426/system_exceptions.o:  \
  ../../../../../microchip/harmony/v1_08_01/framework/peripheral/ports/processor/../templates/ports_ChangeNoticeEdgeControl_Unsupported.h  \
  ../../../../../microchip/harmony/v1_08_01/framework/peripheral/ports/processor/../templates/ports_ChangeNoticeEdgeStatus_Unsupported.h  \
  ../src/mainapp.h  \
-../src/system_config/default/system_definitions.h  \
- ../src/common.h  \
+../src/common.h  \
 ../src/motor_control.h  \
-../src/softwareTimer.h  \
+ ../src/softwareTimer.h  \
  ../../../../../microchip/harmony/v1_08_01/third_party/rtos/FreeRTOS/Source/include/timers.h  \
  ../../../../../microchip/harmony/v1_08_01/third_party/rtos/FreeRTOS/Source/include/task.h  \
  ../src/motor_control_public.h  \

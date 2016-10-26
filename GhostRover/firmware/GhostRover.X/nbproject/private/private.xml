@@ -3,13 +3,17 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/ECE_4534/Fall_2016/GhostRover/firmware/src/common.h</file>
-            <file>file:/C:/ECE_4534/Fall_2016/GhostRover/firmware/src/uart_tx.c</file>
-            <file>file:/C:/ECE_4534/Fall_2016/GhostRover/firmware/src/system_config/default/framework/driver/adc/src/drv_adc_static.c</file>
-            <file>file:/C:/ECE_4534/Fall_2016/GhostRover/firmware/src/adc_1.h</file>
-            <file>file:/C:/ECE_4534/Fall_2016/GhostRover/firmware/src/system_config/default/system_interrupt.c</file>
-            <file>file:/C:/ECE_4534/Fall_2016/GhostRover/firmware/src/adc_1.c</file>
-            <file>file:/C:/ECE_4534/Fall_2016/GhostRover/firmware/src/mainapp.c</file>
+            <file>file:/C:/ece4534/ECE_4534_Team10_Fall2016/GhostRover/firmware/src/softwareTimer.h</file>
+            <file>file:/C:/microchip/harmony/v1_08_01/third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MX/portmacro.h</file>
+            <file>file:/C:/ece4534/ECE_4534_Team10_Fall2016/GhostRover/firmware/src/motor_control.c</file>
+            <file>file:/C:/ece4534/ECE_4534_Team10_Fall2016/GhostRover/firmware/src/mainapp.c</file>
+            <file>file:/C:/ece4534/ECE_4534_Team10_Fall2016/GhostRover/firmware/src/system_config/default/system_interrupt.c</file>
+            <file>file:/C:/ece4534/ECE_4534_Team10_Fall2016/GhostRover/firmware/src/adc_1.c</file>
+            <file>file:/C:/ece4534/ECE_4534_Team10_Fall2016/GhostRover/firmware/src/motor_control.h</file>
+            <file>file:/C:/ece4534/ECE_4534_Team10_Fall2016/GhostRover/firmware/src/motor_control_public.h</file>
+            <file>file:/C:/ece4534/ECE_4534_Team10_Fall2016/GhostRover/firmware/src/softwareTimer.c</file>
+            <file>file:/C:/ece4534/ECE_4534_Team10_Fall2016/GhostRover/firmware/src/system_config/default/framework/system/ports/src/sys_ports_static.c</file>
+            <file>file:/C:/ece4534/ECE_4534_Team10_Fall2016/GhostRover/firmware/src/system_config/default/FreeRTOSConfig.h</file>
         </group>
     </open-files>
 </project-private>

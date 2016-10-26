@@ -15,8 +15,8 @@
  */
 /* ************************************************************************** */
 
-#ifndef _MOTOR_CONTROL_PUBLIC_H    /* Guard against multiple inclusion */
-#define _MOTOR_CONTROL_PUBLIC_H
+#ifndef _EXAMPLE_FILE_NAME_H    /* Guard against multiple inclusion */
+#define _EXAMPLE_FILE_NAME_H
 
 
 /* ************************************************************************** */
@@ -25,24 +25,38 @@
 /* ************************************************************************** */
 /* ************************************************************************** */
 
-#include "common.h"
+/* This section lists the other files that are included in this file.
+ */
+
+/* TODO:  Include other files here if needed. */
+
+#include <stdint.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include "system_config.h"
+#include "system_definitions.h"
+
+#include <timers.h>
+#include "motor_control_public.h"
+
 
 /* Provide C++ Compatibility */
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-BaseType_t sendToMotorControlQueue(messageStructure msg);
-BaseType_t sendToMotorControlQueueFromISR(messageStructure msg);
-void activateTimer();
-void irSensor();
-
-    /* Provide C++ Compatibility */
+//timer functions
+    void initializeTimer();
+    void callbackTimer(TimerHandle_t timer);
+    
+    
+/* Provide C++ Compatibility */
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _MOTOR_CONTROL_PUBLIC_H */
+#endif /* _EXAMPLE_FILE_NAME_H */
 
 /* *****************************************************************************
  End of File

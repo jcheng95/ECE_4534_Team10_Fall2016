@@ -118,7 +118,7 @@ void sendSensorData(unsigned int val)
     messageStructure newMessage;
     newMessage.sender = MY_SENDER;
     newMessage.messageNumber = 0;
-    newMessage.messageType = GHOST_SENSOR;
+    newMessage.messageType = DEBUG;
     newMessage.messageSize = 4;
     // MSB in index 0
     newMessage.messageContent[0] = (val & 0xFF000000) >> 24;
@@ -171,7 +171,7 @@ void ADC_1_Tasks ( void )
     while(1) {
         if(xQueueReceive(adc_1Data.adcQueue, &tempMsg, portMAX_DELAY)) {
             // Process and send to TX queue
-            sendSensorData(convertToCentimeters(tempMsg));
+            sendSensorData(tempMsg);//convertToCentimeters(tempMsg));
         }
     }
 }

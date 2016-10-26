@@ -104,6 +104,9 @@ BaseType_t sendToMainAppQueueFromISR(messageStructure msg)
 // *****************************************************************************
 // *****************************************************************************
 
+
+
+
 // Sending a debug message
 void sendDebugMessage(unsigned int val)
 {
@@ -237,17 +240,18 @@ void MAINAPP_Tasks ( void )
         if(xQueueReceive(mainappData.mainQueue, &tempMsg, portMAX_DELAY)) {
             // Filter messages
             if(tempMsg.messageType == INITIAL_ORDER) {
+                activateTimer();//if initial order is recieved, activate the software timer
                 // Start up ADC when it becomes pertinent
-                DRV_ADC_Open();
+                //DRV_ADC_Open();
             }
             else if(tempMsg.messageType == GHOST_COMMAND) {
                 // Filter out content
-                sendCompleteMessage();
+                sendToMotorControlQueue(tempMsg);
             }
             else if(tempMsg.messageType == DEBUG) {
                 // Filter out content
-                sendDebugMessage(300);
-            }
+                sendToTXQueue(tempMsg);
+            }   
             else if(tempMsg.messageType == GHOST_SENSOR) {
                 // Filter out content
                 sendSensorMessage(tempMsg.messageContent);

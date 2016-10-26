@@ -59,6 +59,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "system_config.h"
 #include "system_definitions.h"
 
+#include <softwareTimer.h>
 #include <queue.h>
 #include "common.h"
 #include "mainapp_public.h"
@@ -89,10 +90,14 @@ extern "C" {
   Remarks:
     Application strings and buffers are be defined outside this structure.
  */
+    
+    typedef enum {irOn = 1, ioOut = 2, ioIn = 3, ioRead = 4} states;
 
 typedef struct
 {
     QueueHandle_t motorControlQueue;
+    states fsm;
+    char lfData;
 } MOTOR_CONTROL_DATA;
 
 

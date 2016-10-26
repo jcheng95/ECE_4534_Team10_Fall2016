@@ -77,6 +77,10 @@
         <Path>Header Files/framework/system</Path>
       </File>
       <File>
+        <Name>drv_oc.h</Name>
+        <Path>Header Files/framework/driver/oc</Path>
+      </File>
+      <File>
         <Name>timers.h</Name>
         <Path>Header Files/FreeRTOS</Path>
       </File>
@@ -237,7 +241,7 @@
       <Template>
         <Name>sys_ports_static.c</Name>
         <Path>Source Files/app/system_config/default/framework/system/ports/src</Path>
-        <Checksum>95DFDD1603FE4DED042B76A806DFF3A5</Checksum>
+        <Checksum>C927518102EB713462DD0288E3789FE3</Checksum>
       </Template>
       <Template>
         <Name>system_interrupt_a.S</Name>
@@ -266,11 +270,13 @@
         <Name>drv_adc_static.h</Name>
         <Path>Header Files/app/system_config/default/framework/driver/adc</Path>
         <Checksum>EB83B77B6F50631DF29C48BC407262EE</Checksum>
+        <ProjectFileChecksum>8FC609AE97E7E472A928AECBAD26A4A6</ProjectFileChecksum>
       </Template>
       <Template>
         <Name>drv_adc_static.c</Name>
         <Path>Source Files/app/system_config/default/framework/driver/adc/src</Path>
         <Checksum>03E8AC8F2985713A1ED76F35C4CA2F8B</Checksum>
+        <ProjectFileChecksum>B506A122D5D4DF0F204614F984F8ED97</ProjectFileChecksum>
       </Template>
       <Template>
         <Name>drv_usart_mapping.c</Name>
@@ -284,7 +290,7 @@
       <Template>
         <Name>FreeRTOSConfig.h</Name>
         <Path>Header Files/app/system_config/default</Path>
-        <Checksum>A95E53D7FC5EAF4E8728293723C0F953</Checksum>
+        <Checksum>570EB15EE663E9EA93DE34A40D79DF23</Checksum>
       </Template>
       <Template>
         <Name>adc_1.c</Name>
@@ -304,7 +310,12 @@
         <Name>system_interrupt.c</Name>
         <Path>Source Files/app/system_config/default</Path>
         <Checksum>ADA12A7C916CC6A7113BA181EED7DE45</Checksum>
-        <ProjectFileChecksum>CD11F1E38A58676F4F0A17B703E355AE</ProjectFileChecksum>
+        <ProjectFileChecksum>CB29B10B1F8666548B5BF79BE349A1F8</ProjectFileChecksum>
+      </Template>
+      <Template>
+        <Name>drv_oc_mapping.c</Name>
+        <Path>Source Files/app/system_config/default/framework/driver/oc/src</Path>
+        <Checksum>0172B391750A7EFB1836702C7EBC4F22</Checksum>
       </Template>
       <Template>
         <Name>sys_clk_static.c</Name>
@@ -316,6 +327,11 @@
         <Path>Header Files/app</Path>
       </Template>
       <Template>
+        <Name>drv_oc_static.c</Name>
+        <Path>Source Files/app/system_config/default/framework/driver/oc/src</Path>
+        <Checksum>DAF551C1F21DD8A30396795BC4A44A8D</Checksum>
+      </Template>
+      <Template>
         <Name>drv_usart_static.c</Name>
         <Path>Source Files/app/system_config/default/framework/driver/usart/src</Path>
         <Checksum>2A4AED7552D145ED28C2C52BFC04AD9D</Checksum>
@@ -323,8 +339,13 @@
       <Template>
         <Name>system_init.c</Name>
         <Path>Source Files/app/system_config/default</Path>
-        <Checksum>1ACA071BA753E82C8926969C0AA4A878</Checksum>
-        <ProjectFileChecksum>2A4B2261509D917033BFCB8750FE4BD8</ProjectFileChecksum>
+        <Checksum>30B5305FCC359C6EF3E7A780B0F0882D</Checksum>
+        <ProjectFileChecksum>2283D27A9CCB2EFEEA5591E25F4E9A18</ProjectFileChecksum>
+      </Template>
+      <Template>
+        <Name>drv_oc_static.h</Name>
+        <Path>Header Files/app/system_config/default/framework/driver/oc</Path>
+        <Checksum>E6CF04C7753F572A73A1D43BAB62E6A7</Checksum>
       </Template>
       <Template>
         <Name>main.c</Name>
@@ -337,7 +358,7 @@
       <Template>
         <Name>system_definitions.h</Name>
         <Path>Header Files/app/system_config/default</Path>
-        <Checksum>84EEC2D08FAC29607A67A89049D75C41</Checksum>
+        <Checksum>547253199360133162C634E1908AC594</Checksum>
       </Template>
       <Template>
         <Name>system_exceptions.c</Name>
@@ -373,12 +394,12 @@
       <Template>
         <Name>system_config.h</Name>
         <Path>Header Files/app/system_config/default</Path>
-        <Checksum>E988FC3A64C60CC84EB47D2A3116A1C1</Checksum>
+        <Checksum>9BC1CAD7E3C6AF07B5C5016327BCFF34</Checksum>
       </Template>
       <Template>
         <Name>drv_tmr_static.c</Name>
         <Path>Source Files/app/system_config/default/framework/driver/tmr/src</Path>
-        <Checksum>C5519AD29FBEB4673726E47FF44AE516</Checksum>
+        <Checksum>BDB00E36EB7D167898523E718255AC1E</Checksum>
       </Template>
       <Template>
         <Name>rtos_hooks.c</Name>
@@ -398,11 +419,11 @@
         <Include value="../src/system_config/default"/>
       </C32-AS>
       <C32>
-        <Include value="C:/ECE_4534/Fall_2016/GhostRover/firmware/src"/>
-        <Include value="C:/ECE_4534/Fall_2016/GhostRover/firmware/src/system_config/default"/>
-        <Include value="C:/ECE_4534/Fall_2016/GhostRover/firmware/src/default"/>
-        <Include value="C:/microchip/harmony/v1_08_01/framework"/>
-        <Include value="C:/ECE_4534/Fall_2016/GhostRover/firmware/src/system_config/default/framework"/>
+        <Include value="C:\ece4534\ECE_4534_Team10_Fall2016\GhostRover\firmware\src"/>
+        <Include value="C:\ece4534\ECE_4534_Team10_Fall2016\GhostRover\firmware\src\system_config\default"/>
+        <Include value="C:\ece4534\ECE_4534_Team10_Fall2016\GhostRover\firmware\src\default"/>
+        <Include value="C:\microchip\harmony\v1_08_01\framework"/>
+        <Include value="C:\ece4534\ECE_4534_Team10_Fall2016\GhostRover\firmware\src\system_config\default\framework"/>
         <Include value="../../../../../microchip/harmony/v1_08_01/third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MX"/>
         <Include value="../../../../../microchip/harmony/v1_08_01/third_party/rtos/FreeRTOS/Source/include"/>
         <Include value="../src/system_config/default"/>

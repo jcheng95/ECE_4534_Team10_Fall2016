@@ -4,6 +4,9 @@ build/default/production/_ext/327000265/drv_usart_static.o:  \
  ../src/system_config/default/system_definitions.h  \
  ../../../../../microchip/harmony/v1_08_01/framework/system/common/sys_common.h  \
  ../../../../../microchip/harmony/v1_08_01/framework/system/common/sys_module.h  \
+ ../../../../../microchip/harmony/v1_08_01/framework/driver/oc/drv_oc.h  \
+ ../../../../../microchip/harmony/v1_08_01/framework/driver/driver_common.h  \
+ ../src/system_config/default/framework/driver/oc/drv_oc_static.h  \
  ../../../../../microchip/harmony/v1_08_01/framework/system/clk/sys_clk.h  \
  ../../../../../microchip/harmony/v1_08_01/framework/peripheral/osc/plib_osc.h  \
  ../../../../../microchip/harmony/v1_08_01/framework/peripheral/osc/processor/osc_processor.h  \
@@ -118,7 +121,6 @@ build/default/production/_ext/327000265/drv_usart_static.o:  \
  ../../../../../microchip/harmony/v1_08_01/framework/peripheral/adc/processor/../templates/adc_ResultGetByIndex_Default.h  \
  ../src/system_config/default/framework/driver/tmr/drv_tmr_static.h  \
  ../../../../../microchip/harmony/v1_08_01/framework/driver/tmr/drv_tmr.h  \
- ../../../../../microchip/harmony/v1_08_01/framework/driver/driver_common.h  \
  ../../../../../microchip/harmony/v1_08_01/framework/peripheral/tmr/plib_tmr.h  \
  ../../../../../microchip/harmony/v1_08_01/framework/peripheral/tmr/processor/tmr_processor.h  \
  ../../../../../microchip/harmony/v1_08_01/framework/peripheral/tmr/processor/tmr_p32xxxx.h  \
@@ -291,8 +293,12 @@ build/default/production/_ext/327000265/drv_usart_static.o:  \
  ../src/mainapp.h  \
 ../src/common.h  \
 ../src/motor_control.h  \
- ../src/mainapp_public.h  \
+ ../src/softwareTimer.h  \
+ ../../../../../microchip/harmony/v1_08_01/third_party/rtos/FreeRTOS/Source/include/timers.h  \
+ ../../../../../microchip/harmony/v1_08_01/third_party/rtos/FreeRTOS/Source/include/task.h  \
+ ../src/motor_control_public.h  \
+../src/mainapp_public.h  \
 ../src/uart_tx.h  \
-../src/tx_buffer_public.h  \
- ../src/uart_rx.h  \
+ ../src/tx_buffer_public.h  \
+../src/uart_rx.h  \
 ../src/adc_1.h 

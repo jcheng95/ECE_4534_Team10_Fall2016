@@ -58,7 +58,8 @@ extern "C" {
 #define GHOST_SENSOR            0x06
 #define GHOST_ROVER_COMPLETE    0x07
 #define INITIAL_ORDER           0x08
-#define GAME_OVER               0x0A  
+#define GAME_OVER               0x0A
+#define PACMAN_POSITION         0x0B
     
 /// Directions ///
 #define FORWARD     0x01
@@ -80,6 +81,23 @@ typedef struct {
     unsigned char messageSize;
     unsigned char messageContent[MAX_MESSAGE_SIZE];
 } messageStructure;
+
+typedef struct{
+    int north;
+    int south;
+    int east;
+    int west;
+    bool pacmanLocation;
+} Intersection;
+
+typedef enum{NORTH,EAST,SOUTH,WEST,ERROR} Direction;
+
+typedef struct{
+    Intersection intersections[13];
+    int ghostPosition;
+    int pacmanPosition;
+    Direction ghostHeading;
+} map;
 
     /* Provide C++ Compatibility */
 #ifdef __cplusplus

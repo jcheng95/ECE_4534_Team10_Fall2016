@@ -74,19 +74,23 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #define TEST_START_VALUE  9000
 // Line-following sensor ideal value (center) = 0x18
 #define IDEAL_SENSOR_VALUE  24
+#define IDEAL_WEIGHTED_SENSOR_VALUE ((int16_t)0)
 /* At a timer period of 500 ms, the ideal encoder value is 265, the Kp is 27 (or 28), the Ki is 210 */
-// Approximately 1 tick every 1.887 ms which results in an ideal number of ticks for a 500 ms timer to be 264.957
-// For a 50 ms timer, there would be 26.4957
+// Approximately 1 tick every 1.878 ms which results in an ideal number of ticks for a 500 ms timer to be 266.2393
+// For a 50 ms timer, there would be 26.6239
 #define IDEAL_ENCODER_VALUE 27
-#define NINETY_DEGREES    620     // 620 ticks from the external interrupt indicates 90 degrees for a turn <- this approximately takes 1.17s with the PWM width at 9000
-/* Gain parameters for PID controller - Encoders */
-#define K_P         502
-#define K_I         30//30
+#define NINETY_DEGREES    623     // 620 ticks from the external interrupt indicates 90 degrees for a turn <- this approximately takes 1.17s with the PWM width at 9000
+#define R_NINETY_DEGREES    629
+/* Gain parameters for PID controller - Encoders 
+   Current Good Values: K_P = 502, K_I = 30*/
+#define K_P         550
+#define K_I         100
 #define K_D         0
-/* Gain parameters for PID controller - Line-following sensor */
-#define SENSOR_K_P  0
-#define SENSOR_K_I  0
-#define SENSOR_K_D  0
+/* Gain parameters for PID controller - Line-following sensor
+   Current Good Values: K_P = 8450, K_D = 350 or 325 */
+#define SENSOR_K_P  6500
+#define SENSOR_K_I  3000
+#define SENSOR_K_D  950
 
 // *****************************************************************************
 /* Application Data
@@ -160,57 +164,67 @@ void sendInternalCompleteMessage(void)
     sendToMainAppQueueFromISR(newMessage);
 }
 
-// Performs secondary PID controller to cascade onto the main motor control loop
-void lineFollowingCorrection()
+// Sending a debug message
+void sendInternalDebugMessage(int16_t val)
 {
-    // Stopping the motors if you've reached an intersection
-    if((motor_controlData.sensorValues & 0xFF) == 0xFF) {
-        sendInternalStopMessage();
+    messageStructure newMessage;
+    // Deconstruct
+    newMessage.sender = MY_SENDER;
+    newMessage.messageNumber = 0;
+    newMessage.messageType = DEBUG; // will need to change for arbitration in message type
+    newMessage.messageSize = sizeof(unsigned int);
+    newMessage.messageContent[0] = 0;
+    newMessage.messageContent[1] = 0;
+    newMessage.messageContent[2] = (val & 0xFF00) >> 8;
+    newMessage.messageContent[3] = (val & 0x00FF);
+    // Send
+    sendToMainAppQueue(newMessage);
+}
+
+// Setting the weighted sensor data based on the current sensor data
+void setWeightedSensorData()
+{
+    if(motor_controlData.sensorValues == 0x18) {
+        // Centered
+        motor_controlData.weightedSensor = 0;
     }
-    // Anything else
-    else {
-        // Not centered
-        /* Reliant on the two center sensors. if one of the center sensors is off, immediately a correction needs to be made */
-        if(!(motor_controlData.sensorValues & 0xFF == 0x18)) {
-            // minor corrections to the PWM
-            if(motor_controlData.sensorValues & 0xFF == 0x01) {
-                // Far off to the left
-            }
-            else if(motor_controlData.sensorValues & 0xFF == 0x03) {
-                // Off to the left
-            }
-            else if(motor_controlData.sensorValues & 0xFF == 0x06) {
-                // Slightly off to the left
-            }
-            else if(motor_controlData.sensorValues & 0xFF == 0x0D) {
-                // Very slightly off to the left
-            }
-            else if(motor_controlData.sensorValues & 0xFF == 0x80) {
-                // Far off to the right
-            }
-            else if(motor_controlData.sensorValues & 0xFF == 0xD0) {
-                // Off to the right
-            }
-            else if(motor_controlData.sensorValues & 0xFF == 0x60) {
-                // Slightly off to the right
-            }
-            else if(motor_controlData.sensorValues & 0xFF == 0x30) {
-                // Very slightly off to the right
-            }
-        }
+    else if(motor_controlData.sensorValues == 0x03) {
+        // Off to the left
+        motor_controlData.weightedSensor = 3;
+    }
+    else if(motor_controlData.sensorValues == 0x06) {
+        // Slightly off to the left
+        motor_controlData.weightedSensor = 2;
+    }
+    else if(motor_controlData.sensorValues == 0x0C) {
+        // Very slightly off to the left
+        motor_controlData.weightedSensor = 1;
+    }
+    else if(motor_controlData.sensorValues == 0xC0) {
+        // Off to the right
+        motor_controlData.weightedSensor = -3;
+    }
+    else if(motor_controlData.sensorValues == 0x60) {
+        // Slightly off to the right
+        motor_controlData.weightedSensor = -2;
+    }
+    else if(motor_controlData.sensorValues == 0x30) {
+        // Very slightly off to the right
+        motor_controlData.weightedSensor = -1;
     }
 }
 
 // Changes whether or not the LED is on or off
 void setLEDState(BaseType_t on)
 {
+    // One location is RA3 which is on the PWM/Digital Output place
     if(on) {
         // Setting the LED for the line-following sensor high
-        SYS_PORTS_PinSet(PORTS_ID_0, PORT_CHANNEL_A, PORTS_BIT_POS_3);
+        SYS_PORTS_PinSet(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_6);
     }
     else {
         // Setting the LED for the line-following sensor high
-        SYS_PORTS_PinClear(PORTS_ID_0, PORT_CHANNEL_A, PORTS_BIT_POS_3);
+        SYS_PORTS_PinClear(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_6);
     }
 }
 
@@ -266,8 +280,7 @@ void readSensorPins()
     unsigned char sensorOne = SYS_PORTS_PinRead(PORTS_ID_0, PORT_CHANNEL_E, PORTS_BIT_POS_0);
     motor_controlData.sensorValues = ((sensorEight << 7) | (sensorSeven << 6) | (sensorSix << 5) | (sensorFive << 4) |
                                       (sensorFour << 3) | (sensorThree << 2) | (sensorTwo << 1) | (sensorOne));
-    
-    lineFollowingCorrection();
+    setWeightedSensorData();
 }
 
 // Sending the sensor data as a sensor data message
@@ -279,7 +292,7 @@ void sendSensorData()
     newMessage.messageType = PACMAN_SENSOR;
     newMessage.messageSize = 4;
     // MSB in index 0
-    newMessage.messageContent[0] = motor_controlData.sensorValues;
+    newMessage.messageContent[0] = motor_controlData.weightedSensor;
     newMessage.messageContent[1] = 0;
     newMessage.messageContent[2] = 0;
     newMessage.messageContent[3] = 0;
@@ -322,6 +335,10 @@ void setInitialMotorValues(Motor* motor, uint16_t newPWMValue, uint16_t newIdeal
     motor->previousEncoderValue = 0;
     motor->integral = 0;
     motor->previousError = 0;
+    motor->idealSensorValue = 0;
+    motor->idealWeightedSensorValue = 0;
+    motor->sensorIntegral = 0;
+    motor->sensorPreviousError = 0;
     
 }
 
@@ -349,34 +366,79 @@ void incrementRightEncoder()
     ++motor_controlData.rightMotor->encoderValue;
 }
 
-void checkForStop(BaseType_t leftMotor, BaseType_t rightMotor)
+// Stopping at an intersection
+BaseType_t stopAtIntersection()
 {
-    if(leftMotor && ((motor_controlData.states == movingLeft) || (motor_controlData.states == movingRight))) {
-        if(motor_controlData.turnCounter >= motor_controlData.turnStopValue) {
-            stopMotor();
-            sendInternalCompleteMessage();
-            motor_controlData.states = stopMoving;
-            motor_controlData.turnCounter = 0;
-            // Set the PWM value to affect the speed of the rover
-            PLIB_OC_PulseWidth16BitSet(LEFT_OSCILLATOR, motor_controlData.leftMotor->pwmWidth);
-            PLIB_OC_PulseWidth16BitSet(RIGHT_OSCILLATOR, motor_controlData.rightMotor->pwmWidth);
-        }
-        else {
-            ++motor_controlData.turnCounter;
+    if((motor_controlData.states == movingForward) || (motor_controlData.states == movingBackward)) {
+        if(motor_controlData.sensorValues & 0x3C == 0x3C) {
+            sendInternalStopMessage();
+            return pdTRUE;
         }
     }
-    else if(rightMotor && ((motor_controlData.states == movingLeft) || (motor_controlData.states == movingRight))) {
-        if(motor_controlData.turnCounter >= motor_controlData.turnStopValue) {
-            stopMotor();
-            sendInternalCompleteMessage();
-            motor_controlData.states = stopMoving;
-            motor_controlData.turnCounter = 0;
-            // Set the PWM value to affect the speed of the rover
-            PLIB_OC_PulseWidth16BitSet(LEFT_OSCILLATOR, motor_controlData.leftMotor->pwmWidth);
-            PLIB_OC_PulseWidth16BitSet(RIGHT_OSCILLATOR, motor_controlData.rightMotor->pwmWidth);
+    return pdFALSE;
+}
+
+void checkForStop(BaseType_t leftMotor, BaseType_t rightMotor)
+{
+    // Separating tick counts for turning left and turning right
+    if((motor_controlData.states == movingLeft)) {
+        if(leftMotor) {
+            if(motor_controlData.turnCounter >= motor_controlData.turnStopValue) {
+                stopMotor();
+                sendInternalCompleteMessage();
+                motor_controlData.states = stopMoving;
+                motor_controlData.turnCounter = 0;
+                // Set the PWM value to affect the speed of the rover
+                PLIB_OC_PulseWidth16BitSet(LEFT_OSCILLATOR, motor_controlData.leftMotor->pwmWidth);
+                PLIB_OC_PulseWidth16BitSet(RIGHT_OSCILLATOR, motor_controlData.rightMotor->pwmWidth);
+            }
+            else {
+                ++motor_controlData.turnCounter;
+            }
         }
-        else {
-            ++motor_controlData.turnCounter;
+        else if(rightMotor) {
+            if(motor_controlData.turnCounter >= motor_controlData.turnStopValue) {
+                stopMotor();
+                sendInternalCompleteMessage();
+                motor_controlData.states = stopMoving;
+                motor_controlData.turnCounter = 0;
+                // Set the PWM value to affect the speed of the rover
+                PLIB_OC_PulseWidth16BitSet(LEFT_OSCILLATOR, motor_controlData.leftMotor->pwmWidth);
+                PLIB_OC_PulseWidth16BitSet(RIGHT_OSCILLATOR, motor_controlData.rightMotor->pwmWidth);
+            }
+            else {
+                ++motor_controlData.turnCounter;
+            }
+        }
+    }
+    else if((motor_controlData.states == movingRight)) {
+        if(leftMotor) {
+            if(motor_controlData.turnCounter >= R_NINETY_DEGREES) {
+                stopMotor();
+                sendInternalCompleteMessage();
+                motor_controlData.states = stopMoving;
+                motor_controlData.turnCounter = 0;
+                // Set the PWM value to affect the speed of the rover
+                PLIB_OC_PulseWidth16BitSet(LEFT_OSCILLATOR, motor_controlData.leftMotor->pwmWidth);
+                PLIB_OC_PulseWidth16BitSet(RIGHT_OSCILLATOR, motor_controlData.rightMotor->pwmWidth);
+            }
+            else {
+                ++motor_controlData.turnCounter;
+            }
+        }
+        else if(rightMotor) {
+            if(motor_controlData.turnCounter >= R_NINETY_DEGREES) {
+                stopMotor();
+                sendInternalCompleteMessage();
+                motor_controlData.states = stopMoving;
+                motor_controlData.turnCounter = 0;
+                // Set the PWM value to affect the speed of the rover
+                PLIB_OC_PulseWidth16BitSet(LEFT_OSCILLATOR, motor_controlData.leftMotor->pwmWidth);
+                PLIB_OC_PulseWidth16BitSet(RIGHT_OSCILLATOR, motor_controlData.rightMotor->pwmWidth);
+            }
+            else {
+                ++motor_controlData.turnCounter;
+            }
         }
     }
 }
@@ -442,16 +504,45 @@ void pidAlgorithm(Motor* motor, uint16_t gainP, uint16_t gainI, uint16_t gainD)
     uint16_t error = motor->idealEncoderValue - measuringPoint;
     // Integral = integral + error * dt
     // dt for the integral and derivative is 500 ms
-    motor->integral += (error / 2);
+    motor->integral += (error / 20);
     // Derivative = (previous error - current error) / dt
-    uint16_t derivative = (motor->previousError - error) * 2;
+    uint16_t derivative = (motor->previousError - error) * 20;
     motor->previousError = error;
     // Setting the output to the PWM for correction
-    motor->pwmWidth = (error * gainP) + (motor->integral * gainI) + (derivative * gainD);
+    motor->pwmWidth = TEST_START_VALUE + (error * gainP) + (motor->integral * gainI) + (derivative * gainD);
     // Preventing overloading the motor PWM width
     if(motor->pwmWidth > PWM_MAX_VALUE) {
         motor->pwmWidth = PWM_MAX_VALUE;
     }
+}
+
+// PID Controller Algorithm
+// Used for the line-following sensor
+void pidSensorAlgorithm(BaseType_t left, BaseType_t right, Motor* motor, int16_t gainP, int16_t gainI, int16_t gainD)
+{
+    int16_t error = IDEAL_WEIGHTED_SENSOR_VALUE - motor_controlData.weightedSensor;
+    // Integral = integral + error * dt
+    // dt for the integral and derivative is 50 ms
+    motor->sensorIntegral += (error / 20);
+    // Setting the output to the PWM for correction
+    // Derivative = (previous error - current error) / dt
+    int16_t derivative = (motor->sensorPreviousError - error) * 20;
+    motor->sensorPreviousError = error;
+    // Setting the output to the PWM for correction
+    if(left) {
+        motor->pwmWidth = TEST_START_VALUE - ((error * gainP) + (motor->sensorIntegral * gainI) + (derivative * gainD));
+    }
+    else if(right) {
+        motor->pwmWidth = TEST_START_VALUE + ((error * gainP) + (motor->sensorIntegral * gainI) + (derivative * gainD));
+    }
+    // Preventing overloading the motor PWM width
+    if(motor->pwmWidth > PWM_MAX_VALUE) {
+        motor->pwmWidth = PWM_MAX_VALUE;
+    }
+    else if(motor->pwmWidth < 0) {
+        motor->pwmWidth = 0;
+    }
+    //sendSensorData();
 }
 
 // Call that will be made by the timer to correct the PID algorithm
@@ -462,8 +553,19 @@ void pidAdjustment()
         return;
     }
     // Perform correction to the PWM width values
-    pidAlgorithm(motor_controlData.leftMotor, K_P, K_I, K_D);
-    pidAlgorithm(motor_controlData.rightMotor, K_P, K_I, K_D);
+    /*pidAlgorithm(motor_controlData.leftMotor, K_P, K_I, K_D);
+    pidAlgorithm(motor_controlData.rightMotor, K_P, K_I, K_D);*/
+    if((motor_controlData.states == movingForward) || (motor_controlData.states == movingBackward)) {
+        pidSensorAlgorithm(pdTRUE, pdFALSE, motor_controlData.leftMotor, SENSOR_K_P, SENSOR_K_I, SENSOR_K_D);
+        //sendInternalDebugMessage(motor_controlData.leftMotor->pwmWidth);
+        pidSensorAlgorithm(pdFALSE, pdTRUE, motor_controlData.rightMotor, SENSOR_K_P, SENSOR_K_I, SENSOR_K_D);
+        //sendInternalDebugMessage(motor_controlData.rightMotor->pwmWidth);
+    }
+    else {
+        pidAlgorithm(motor_controlData.leftMotor, K_P, K_I, K_D);
+        pidAlgorithm(motor_controlData.rightMotor, K_P, K_I, K_D);
+    }
+    
     // Set the PWM width to the corrected value based on the PID control algorithm
     PLIB_OC_PulseWidth16BitSet(LEFT_OSCILLATOR, motor_controlData.leftMotor->pwmWidth);
     PLIB_OC_PulseWidth16BitSet(RIGHT_OSCILLATOR, motor_controlData.rightMotor->pwmWidth);
@@ -488,7 +590,13 @@ void updateSensorData()
             break;
         case measure_disable_LED:
             readSensorPins();
-            sendSensorData();
+            if((motor_controlData.states == movingForward || motor_controlData.states == movingBackward) && motor_controlData.intersectionIgnoreCounter != 0) {
+                --motor_controlData.intersectionIgnoreCounter;
+            }
+            else {
+                stopAtIntersection();
+            }
+            //sendSensorData();
             setLEDState(pdFALSE);
             motor_controlData.timer_states = enable_LED;
             break;
@@ -535,17 +643,19 @@ void MOTOR_CONTROL_Initialize ( void )
     motor_controlData.timer_states = enable_LED;
     // Defaulting the sensor data
     motor_controlData.sensorValues = 0;
+    // Defaulting the weighted sensor data
+    motor_controlData.weightedSensor = (int16_t)0;
     
     // Initializing the timer for rover movement correction by using the PID controller
     // Software timer for PID algorithm
     timerInitialize();
     
+    // Initializing the intersection counter
+    motor_controlData.intersectionIgnoreCounter = 0;
+    
     // Initializing default values turning
     motor_controlData.turnCounter = 0;
     motor_controlData.turnStopValue = NINETY_DEGREES;
-    
-    // Setting the LED on
-    //setLEDState(pdTRUE);
 }
 
 
@@ -595,6 +705,9 @@ void MOTOR_CONTROL_Tasks ( void )
             // Stop byte was not set, keep moving
             else {
                 controlMotor(tempMsg.messageContent[0]);
+                if(motor_controlData.states == movingForward || motor_controlData.states == movingBackward) {
+                    motor_controlData.intersectionIgnoreCounter = 6;
+                }
                 PLIB_OC_PulseWidth16BitSet(LEFT_OSCILLATOR, motor_controlData.leftMotor->pwmWidth);
                 PLIB_OC_PulseWidth16BitSet(RIGHT_OSCILLATOR, motor_controlData.rightMotor->pwmWidth);
             }

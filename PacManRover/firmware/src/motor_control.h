@@ -70,13 +70,13 @@ Motor Pins:
     3  - OC1/PWM
     78 - Direction
     37 - Encoder1 (Max32 = TMR3/Pin 22) (SB2-In) <- This is the ideal encoder value?
-    7  - Encoder2 INT2 (SA2-In)                  <- This is the real encoder value?
+    2  - Encoder2 INT1 (SA1-In)                  <- This is the real encoder value?
  
     Left Motor (J6 - S(A/B)2):
     5  - OC2/PWM
     4  - Direction
     A6 - Encoder1 (Max32 = TMR4/Pin 23) (SB1-In) <- This is the ideal encoder value?
-    2  - Encoder2 INT1 (SA1-In)                  <- This is the real encoder value?
+    7  - Encoder2 INT2 (SA2-In)                  <- This is the real encoder value?
  */
 
 /*
@@ -138,6 +138,12 @@ typedef struct {
     uint16_t idealEncoderValue;
     uint16_t integral;
     uint16_t previousError;
+    
+    /* Same data values but for sensors */
+    uint16_t idealSensorValue;
+    uint16_t idealWeightedSensorValue;
+    int16_t sensorIntegral;
+    uint16_t sensorPreviousError;
 } Motor;
     
 typedef struct
@@ -156,6 +162,10 @@ typedef struct
        the MSB is the highest number sensor in the list
     */
     unsigned char sensorValues;
+    // Weighted sensor data used for the independent PID controller
+    int16_t weightedSensor;
+    // Counter used for ignoring an intersection for a new forward or backwards command
+    int intersectionIgnoreCounter;
     
     // Motor values used to assign to the left and right motors for easy manipulation of the speed and direction of the rover
     Motor leftMotorMaxValues;

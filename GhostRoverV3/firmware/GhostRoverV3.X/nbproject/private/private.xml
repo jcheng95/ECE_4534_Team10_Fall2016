@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/microchip/harmony/v1_08_01/apps/GhostRoverV3/firmware/src/motor_control.c</file>
+            <file>file:/C:/microchip/harmony/v1_08_01/third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MX/portmacro.h</file>
+            <file>file:/C:/microchip/harmony/v1_08_01/apps/GhostRoverV3/firmware/src/mainapp.c</file>
+            <file>file:/C:/microchip/harmony/v1_08_01/apps/GhostRoverV3/firmware/src/motor_control_public.h</file>
+            <file>file:/C:/microchip/harmony/v1_08_01/apps/GhostRoverV3/firmware/src/adcTimer.c</file>
+            <file>file:/C:/microchip/harmony/v1_08_01/apps/GhostRoverV3/firmware/src/system_config/default/system_interrupt.c</file>
+            <file>file:/C:/microchip/harmony/v1_08_01/apps/GhostRoverV3/firmware/src/adc_app.h</file>
+            <file>file:/C:/microchip/harmony/v1_08_01/apps/GhostRoverV3/firmware/src/motor_control.h</file>
+            <file>file:/C:/microchip/harmony/v1_08_01/apps/GhostRoverV3/firmware/src/motorTimer.c</file>
+            <file>file:/C:/microchip/harmony/v1_08_01/apps/GhostRoverV3/firmware/src/sensorTimer.c</file>
+            <file>file:/C:/microchip/harmony/v1_08_01/apps/GhostRoverV3/firmware/src/adc_app.c</file>
+        </group>
+    </open-files>
+</project-private>

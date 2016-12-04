@@ -87,10 +87,12 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #define K_I         100
 #define K_D         0
 /* Gain parameters for PID controller - Line-following sensor
-   Current Good Values: K_P = 8450, K_D = 350 or 325 */
-#define SENSOR_K_P  6500
-#define SENSOR_K_I  3000
-#define SENSOR_K_D  950
+   Current Good Values: K_P = 8450, K_D = 350 or 325 
+   Current Good as of 11/18: K_P = 6500, K_I = 3000, K_D = 950*/
+// 3000, 2500, 2500
+#define SENSOR_K_P  4200
+#define SENSOR_K_I  1200
+#define SENSOR_K_D  0
 
 // *****************************************************************************
 /* Application Data
@@ -367,15 +369,14 @@ void incrementRightEncoder()
 }
 
 // Stopping at an intersection
-BaseType_t stopAtIntersection()
+void stopAtIntersection()
 {
     if((motor_controlData.states == movingForward) || (motor_controlData.states == movingBackward)) {
-        if(motor_controlData.sensorValues & 0x3C == 0x3C) {
+        if((motor_controlData.sensorValues & 0x3C) == 0x3C) {
+        //if(motor_controlData.sensorValues == 0xFF) {
             sendInternalStopMessage();
-            return pdTRUE;
         }
     }
-    return pdFALSE;
 }
 
 void checkForStop(BaseType_t leftMotor, BaseType_t rightMotor)
@@ -590,7 +591,7 @@ void updateSensorData()
             break;
         case measure_disable_LED:
             readSensorPins();
-            if((motor_controlData.states == movingForward || motor_controlData.states == movingBackward) && motor_controlData.intersectionIgnoreCounter != 0) {
+            if((motor_controlData.states == movingForward || motor_controlData.states == movingBackward) && motor_controlData.intersectionIgnoreCounter > 0) {
                 --motor_controlData.intersectionIgnoreCounter;
             }
             else {
@@ -706,7 +707,7 @@ void MOTOR_CONTROL_Tasks ( void )
             else {
                 controlMotor(tempMsg.messageContent[0]);
                 if(motor_controlData.states == movingForward || motor_controlData.states == movingBackward) {
-                    motor_controlData.intersectionIgnoreCounter = 6;
+                    motor_controlData.intersectionIgnoreCounter = 11;
                 }
                 PLIB_OC_PulseWidth16BitSet(LEFT_OSCILLATOR, motor_controlData.leftMotor->pwmWidth);
                 PLIB_OC_PulseWidth16BitSet(RIGHT_OSCILLATOR, motor_controlData.rightMotor->pwmWidth);

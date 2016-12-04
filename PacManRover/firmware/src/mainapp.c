@@ -178,6 +178,23 @@ void sendGameOverMessage(void)
     sendToTXQueue(newMessage);
 }
 
+// Sends a message internally whenever the sensor sees all black
+void sendExternalStopMessage()
+{
+    messageStructure newMessage;
+    // Deconstruct
+    newMessage.sender = MY_SENDER;
+    newMessage.messageNumber = 0;
+    newMessage.messageType = PACMAN_COMMAND; // will need to change for arbitration in message type
+    newMessage.messageSize = sizeof(unsigned int);
+    newMessage.messageContent[0] = FORWARD;
+    newMessage.messageContent[1] = 0;
+    newMessage.messageContent[2] = 0;
+    newMessage.messageContent[3] = 1;
+    // Send
+    sendToMotorControlQueue(newMessage);
+}
+
 void convertAndSendSensorData(messageStructure oldMessage)
 {
     messageStructure sendingMessage;
@@ -255,6 +272,7 @@ void MAINAPP_Tasks ( void )
                 sendToTXQueue(tempMsg);
             }
             else if(tempMsg.messageType == GAME_OVER) {
+                sendExternalStopMessage();
                 // Filter out content
                 sendGameOverMessage();
             }

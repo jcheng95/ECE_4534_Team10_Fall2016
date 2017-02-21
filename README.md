@@ -10,13 +10,20 @@ Code is separated to 4 separate directories for each PIC that was used:
   * Ghost Rover
   * Pac-Man Control (Algorithm)
   * Ghost Control (Algorithm)
+  
+  Role            | Main Contributor
+  ---------------:|:------------------
+  Pac-Man Rover   | Jacky Cheng
+  Ghost Rover     | Ehsaan Pakmehr
+  Pac-Man Control | Hezroy Hammil
+  Ghost Control   | Kyle Felter
 
 ## Organization
 ---------------
 Directories are as followed:
 
 Directory          | Description
------------------- | -----------------------------------------
+------------------ | :-----------------------------------------
 Milestone1_v2      | Finalized version of Milestone 1.
 Milestone2         | Code written prior to transition to this repository.
 Milestone2_v2      | Finalized version of Milestone 2.
